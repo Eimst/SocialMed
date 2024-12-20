@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using API.DTOs;
 using API.Helpers;
 using Core.Entities;
@@ -58,6 +59,25 @@ public class AccountController(SignInManager<AppUser> signInManager, IUnitOfWork
         await signInManager.SignOutAsync();
 
         return NoContent();
+    }
+    
+    [HttpGet("info")]
+    public async Task<ActionResult<UserProfileInfoDto>> GetUserInfo()
+    {
+        var userProfile = await UserProfileHelper.GetAuthorizedUserProfile(unit, User);
+        
+        if (userProfile == null)
+            return NoContent();
+        
+        var userInfo = new UserProfileInfoDto
+        {
+            FirstName = userProfile.FirstName,
+            LastName = userProfile.LastName,
+            ProfileId = userProfile.Id,
+            ProfilePictureUrl = userProfile.ProfilePictureUrl,
+        };
+        
+        return userInfo;
     }
 
     [Authorize]

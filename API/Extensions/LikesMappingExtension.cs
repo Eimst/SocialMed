@@ -9,6 +9,7 @@ public static class LikesMappingExtension
     {
         return new LikeDto
         {
+            Id = like.Id,
             UserId = like.UserId,
             DateCreated = like.DateCreated,
             PostId = like.PostId,

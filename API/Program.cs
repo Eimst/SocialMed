@@ -16,6 +16,17 @@ builder.Services.AddDbContext<MediaContext>(options =>
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+builder.Services.AddCors();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.None; // Required for cross-origin cookies
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Requires HTTPS
+});
+
+
+builder.Services.AddAuthorization();
 builder.Services.AddIdentityApiEndpoints<AppUser>()
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<MediaContext>();
@@ -23,7 +34,11 @@ builder.Services.AddIdentityApiEndpoints<AppUser>()
 
 var app = builder.Build();
 
-app.UseHttpsRedirection();
+app.UseCors(x => x
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    .AllowCredentials()
+    .WithOrigins("http://localhost:3000", "https://localhost:3000"));
 
 app.UseAuthentication();
 app.UseAuthorization();

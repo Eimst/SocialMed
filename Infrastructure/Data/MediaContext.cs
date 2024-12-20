@@ -16,6 +16,7 @@ public class MediaContext(DbContextOptions<MediaContext> options) : IdentityDbCo
 
     public DbSet<UserProfile> UserProfiles { get; set; }
 
+    public DbSet<Friend> Friends { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

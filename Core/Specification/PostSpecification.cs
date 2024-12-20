@@ -9,6 +9,7 @@ public class PostSpecification : BaseSpecification<Post>
         AddInclude(x => x.Comments);
         AddInclude(x => x.Likes);
         AddInclude(x => x.UserProfile);
+        AddOrderByDescending(x => x.DateCreated);
     }
     
     public PostSpecification(string id) : base(entity => entity.Id == id)

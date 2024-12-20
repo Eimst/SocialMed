@@ -9,6 +9,7 @@ public static class PostMappingExtension
     {
         return new PostDto
         {
+            Id = post.Id,
             UserId = post.UserId,
             Content = post.Content,
             ImageUrl = post.ImageUrl,

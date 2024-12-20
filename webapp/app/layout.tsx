@@ -1,6 +1,10 @@
 import type {Metadata} from "next";
 import "./globals.css";
 import React from "react";
+import NavBar from "@/app/nav/NavBar";
+import ToasterProvider from "@/app/providers/ToastProvider";
+import FriendsLayout from "@/app/layouts/FriendsLayout";
+import FetchPosts from "@/app/utils/FetchPosts";
 
 export const metadata: Metadata = {
     title: "SocialMed",
@@ -13,11 +17,22 @@ export default function RootLayout({
     children: React.ReactNode;
 
 }>) {
+
     return (
         <html lang="en">
         <body
         >
-        {children}
+        <FetchPosts/>
+        <ToasterProvider/>
+
+        <NavBar />
+
+        <main className="container max-w-full">
+            <FriendsLayout>
+                {children}
+            </FriendsLayout>
+
+        </main>
         </body>
         </html>
     );

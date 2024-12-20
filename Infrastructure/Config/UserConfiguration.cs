@@ -26,7 +26,17 @@ public class UserConfiguration : IEntityTypeConfiguration<UserProfile>
         builder.HasOne(up => up.AppUser) 
             .WithOne()
             .HasForeignKey<UserProfile>(up => up.UserId) 
-            .OnDelete(DeleteBehavior.Cascade); 
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(x => x.ReceivedFriendRequests)
+            .WithOne(x => x.Responder)
+            .HasForeignKey(x => x.ResponderId)
+            .OnDelete(DeleteBehavior.NoAction);
         
+        builder.HasMany(x => x.SentFriendRequests)
+            .WithOne(x => x.Requester)
+            .HasForeignKey(x => x.RequesterId)
+            .OnDelete(DeleteBehavior.NoAction);
+
     }
 }

@@ -9,6 +9,7 @@ public static class CommentMappingExtension
     {
         return new CommentDto
         {
+            Id = comment.Id,
             UserId = comment.UserId,
             DateCreated = comment.DateCreated,
             Text = comment.Text,
