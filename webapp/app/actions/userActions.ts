@@ -42,3 +42,7 @@ export const logout = async () => {
         useUserStore.getState().setUser(null);
     }
 }
+
+export const getProfileInfo = async (userId: string) => {
+    return await fetchWrapper.get('/account/user-info/' + userId);
+}

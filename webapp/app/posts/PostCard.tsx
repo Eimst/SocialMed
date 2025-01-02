@@ -28,7 +28,7 @@ function PostCard({post}: Props) {
     //     if (isCommenting && addCommentRef.current) {
     //         addCommentRef.current.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest",});
     //     }
-    // }, [isCommenting]); 
+    // }, [isCommenting]);
 
     const handleCommentClick = () => {
         setCommenting(!isCommenting);

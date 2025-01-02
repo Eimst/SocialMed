@@ -1,14 +1,18 @@
+'use client'
+
 import React from 'react';
 import {LiaUserFriendsSolid} from "react-icons/lia";
-import Friend from "@/app/components/Friend";
-import {Post} from "@/types";
+import Friend from "@/app/friends/Friend";
+import {useFriendStore} from "@/hooks/useFriendStore";
 
 type Props = {
-    posts?: Post[]
     setShowFriends: any
 }
 
-function Friends({posts, setShowFriends}: Props) {
+function Friends({setShowFriends}: Props) {
+
+    const friends = useFriendStore((state) => state.friends);
+
     return (
         <div className={`border-2 border-gray-50 shadow-md sticky h-[75vh] flex flex-col rounded-lg`}
         >
@@ -21,9 +25,10 @@ function Friends({posts, setShowFriends}: Props) {
                 </span>
                     </h1>
                 </div>
-                {posts && posts.map((post) => (
-                    <Friend key={post.id} user={post.userProfile}/>
-                ))}
+                {friends.length > 0 ? friends.map((friend) => (
+                    <Friend key={friend.userProfileInfo.profileId} user={friend.userProfileInfo}/>
+                )) : (<div className={`flex font-semibold text-md justify-center h-1/5 items-center`}>You have no friends</div>)
+                }
             </div>
 
             {/* Sticky Footer */}

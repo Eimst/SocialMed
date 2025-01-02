@@ -19,7 +19,7 @@ function ProfileImages() {
                 sizes="(max-width: 16px) 100vw, (max-width: 16px) 50vw, 25vw"
 
             />
-            <div className={`relative w-64 h-64 top-72`}>
+            <div className={`absolute bottom-0 left-32 transform -translate-x-1/2 translate-y-1/2 w-64 h-64`}>
                 <Image
                     src={'https://cdn.pixabay.com/photo/2023/12/22/01/37/woman-8463055_1280.jpg'}
 

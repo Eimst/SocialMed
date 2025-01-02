@@ -10,4 +10,5 @@ public class UserProfileSpecification : BaseSpecification<UserProfile>
         AddInclude(x => x.Likes);
         AddInclude(x => x.Posts);
     }
+    
 }

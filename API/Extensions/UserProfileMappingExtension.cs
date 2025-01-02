@@ -5,15 +5,14 @@ namespace API.Extensions;
 
 public static class UserProfileMappingExtension
 {
-    public static UserProfileDto ToDto(this UserProfile userProfile)
+    public static UserProfileInfoDto ToDto(this UserProfile userProfile)
     {
-        // if (userProfile is null)
-        //     return null;
-        return new UserProfileDto
+        return new UserProfileInfoDto
         {
             FirstName = userProfile.FirstName,
             LastName = userProfile.LastName,
-            ProfilePictureUrl = userProfile.ProfilePictureUrl
+            ProfilePictureUrl = userProfile.ProfilePictureUrl,
+            ProfileId = userProfile.Id
         };
     }
     

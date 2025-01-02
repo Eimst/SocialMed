@@ -3,6 +3,7 @@ using API.DTOs;
 using API.Helpers;
 using Core.Entities;
 using Core.Interfaces;
+using Core.Specification;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -68,6 +69,25 @@ public class AccountController(SignInManager<AppUser> signInManager, IUnitOfWork
         
         if (userProfile == null)
             return NoContent();
+        
+        var userInfo = new UserProfileInfoDto
+        {
+            FirstName = userProfile.FirstName,
+            LastName = userProfile.LastName,
+            ProfileId = userProfile.Id,
+            ProfilePictureUrl = userProfile.ProfilePictureUrl,
+        };
+        
+        return userInfo;
+    }
+
+    [HttpGet("user-info/{userId}")]
+    public async Task<ActionResult<UserProfileInfoDto>> GetUserInfo(string userId)
+    {
+        var userProfile = await unit.Repository<UserProfile>().GetByIdAsync(userId);
+        
+        if (userProfile == null)
+            return NotFound("User not found");
         
         var userInfo = new UserProfileInfoDto
         {

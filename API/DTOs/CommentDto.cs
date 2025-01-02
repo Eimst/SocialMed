@@ -19,5 +19,5 @@ public class CommentDto
     public required string PostId { get; set; }
     
     [Required]
-    public required UserProfileDto UserProfile { get; set; }
+    public required UserProfileInfoDto UserProfile { get; set; }
 }

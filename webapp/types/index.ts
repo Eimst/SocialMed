@@ -7,7 +7,7 @@ export interface Post {
     comments: Comment[]
     likes: Like[]
     userId: string
-    userProfile: UserProfile
+    userProfile: UserProfileInfo
 }
 
 export interface Comment {
@@ -16,20 +16,14 @@ export interface Comment {
     dateCreated: string
     userId: string
     postId: string
-    userProfile: UserProfile
-}
-
-export interface UserProfile {
-    firstName: string
-    lastName: string
-    profilePictureUrl: string
+    userProfile: UserProfileInfo
 }
 
 export interface Like {
     id: string
     dateCreated: string
     userId: string
-    userProfile: UserProfile
+    userProfile: UserProfileInfo
     postId: string
 }
 
@@ -39,4 +33,10 @@ export interface UserProfileInfo {
     lastName: string
     profileId: string
     profilePictureUrl: string
+}
+
+export interface Friend {
+    userProfileInfo: UserProfileInfo
+    status: string
+    dateCreated: string
 }

@@ -22,5 +22,5 @@ public class PostDto
     public required string UserId { get; set; }
 
     [Required] 
-    public required UserProfileDto UserProfile { get; set; }
+    public required UserProfileInfoDto UserProfile { get; set; }
 }

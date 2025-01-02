@@ -1,11 +1,17 @@
 'use client'
 
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import PostCard from "@/app/posts/PostCard";
 import ProfileImages from "@/app/account/profile/[id]/ProfileImages";
 import {usePostStore} from "@/hooks/usePostStore";
 import {useShallow} from "zustand/react/shallow";
-import {useLoadingStore} from "@/hooks/useLoadingStore";
+import {useUserStore} from "@/hooks/useUserStore";
+import {getProfileInfo} from "@/app/actions/userActions";
+import toast from "react-hot-toast";
+import AvailableFriendActions from "@/app/friends/AvailableFriendActions";
+import Modal from "@/app/components/Modal";
+import ShowAllFriends from "@/app/friends/ShowAllFriends";
+import ProfileSettings from "@/app/account/profile/[id]/ProfileSettings";
 
 
 type Props = {
@@ -17,11 +23,31 @@ function Profile({id}: Props) {
         state.posts.filter((post) => post.userId === id))
     );
 
-    const isLoading = useLoadingStore(state => state.isLoading);
+    const user = useUserStore(state => state.user);
+    const [nameLastName, setNameLastName] = useState("");
 
-    if (isLoading) {
-        return <div className={`-mt-40`}>Loading...</div>;
-    }
+    const [isModalOpen, setModalOpen] = useState(false);
+
+    const openModal = () => setModalOpen(true);
+    const closeModal = () => setModalOpen(false);
+
+    useEffect(() => {
+        const getProfileUserInfo = async () => {
+            try {
+                const data = await getProfileInfo(id)
+
+                if(data.error)
+                    throw data.error
+
+                setNameLastName(`${data.firstName} ${data.lastName}`);
+
+            } catch (error: any) {
+                toast.error(error.message);
+            }
+
+        }
+        getProfileUserInfo();
+    }, [id]);
 
     return (
 
@@ -30,20 +56,42 @@ function Profile({id}: Props) {
 
                 <ProfileImages/>
 
-                <div className={`flex w-[73%] ml-auto pt-7`}>
-                        <span className={`flex justify-start text-black text-2xl font-semibold`}>
-                            Vardas Pavarde
+                <div className={`flex w-[73%] ml-auto pt-7 justify-between`}>
+                        <span className={`text-black text-2xl font-semibold`}>
+                            {nameLastName}
                         </span>
+                    {
+                        user?.profileId !== id ? (
+                           <AvailableFriendActions userId={id}/>
+                        ) : (
+                            <ProfileSettings/>
+                        )
+                    }
+
                 </div>
-                <div className={`w-1/2 mt-24 mb-10`}>
+                <div className={`flex justify-between mt-24 mb-10`}>
+                    <div className={`w-1/2`}>
                         <span className={`font-semibold text-black text-lg`}>
                             Bio:
                         </span>
-                    <span className={`flex w-[100%]  justify-end text-black text-justify`}>
+                        <span className={`flex w-[100%]  justify-end text-black text-justify`}>
                             Browse through the icons below to find the one you need. The search field supports synonyms—for example,
                             try searching for "hamburger" or "logout."
                         </span>
+                    </div>
+                    <div className={`relative h-10`}>
+                        <button
+                            className={`bg-gradient-to-r from-green-600 via-green-500 to-green-400 focus:outline-none 
+                            rounded-lg px-2 py-2 text-center shadow-md border-green-200 text-white
+                            transition-all duration-300"`}
+                            onClick={openModal}
+                        >
+                            See all friends
+                        </button>
+                    </div>
+
                 </div>
+
 
                 <div
                     className={`flex  ${posts.length > 0 && 'bg-red-50 border-2 shadow-md border-gray-200'}
@@ -75,6 +123,9 @@ function Profile({id}: Props) {
                 }
 
             </div>
+            <Modal isOpen={isModalOpen} onClose={closeModal}>
+                <ShowAllFriends userId={id}/>
+            </Modal>
 
         </div>
 

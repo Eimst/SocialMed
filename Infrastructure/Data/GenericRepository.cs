@@ -21,6 +21,11 @@ public class GenericRepository<T>(MediaContext context) : IGenericRepository<T> 
         return await ApplySpecification(spec).ToListAsync();
     }
 
+    public async Task<List<T>> GetListAsync()
+    {
+        return await context.Set<T>().ToListAsync();
+    }
+    
     public void Add(T entity)
     {
         context.Set<T>().Add(entity);

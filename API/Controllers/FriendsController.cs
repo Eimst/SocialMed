@@ -20,10 +20,7 @@ public class FriendsController(IUnitOfWork unit) : ControllerBase
         var friendSpecification = new FriendSpecification(userId);
         var friends = await unit.Repository<Friend>().GetListWithSpecsAsync(friendSpecification);
         
-        if (friends.Count > 0)
-            return friends.Select(x => x.ToFriendDto(userId)).ToList();
-        
-        return NoContent();
+        return friends.Select(x => x.ToFriendDto(userId)).ToList();
     }
     
     [Authorize]
@@ -46,7 +43,7 @@ public class FriendsController(IUnitOfWork unit) : ControllerBase
 
 
     [Authorize]
-    [HttpPost("{userId}")]
+    [HttpPost("request/{userId}")]
     public async Task<ActionResult<FriendDto>> MakeFriendRequest(string userId)
     {
         var userToMakeReqProfile = await unit.Repository<UserProfile>().GetByIdAsync(userId);

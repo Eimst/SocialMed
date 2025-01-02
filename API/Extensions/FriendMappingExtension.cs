@@ -13,14 +13,14 @@ public static class FriendMappingExtension
             {
                 DateCreated = friend.DateCreated,
                 Status = friend.Status != Status.Friend ? Status.NeedToConfirm.ToString() : friend.Status.ToString(),
-                UserProfileInfoDto = ToUserProfileInfoDto(friend.Requester)
+                UserProfileInfo = ToUserProfileInfoDto(friend.Requester)
             };
 
         return new FriendDto
         {
             DateCreated = friend.DateCreated,
             Status = friend.Status != Status.Friend ? Status.WaitingForConfirmation.ToString() : friend.Status.ToString(),
-            UserProfileInfoDto = ToUserProfileInfoDto(friend.Responder)
+            UserProfileInfo = ToUserProfileInfoDto(friend.Responder)
         };
     }
 
