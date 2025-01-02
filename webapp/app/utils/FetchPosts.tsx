@@ -16,15 +16,15 @@ function FetchPosts() {
                 const data = await getAllPosts();
                 setPosts(data);
 
-            } catch (error: any) {
-                toast.error(error.message);
+            } catch {
+                toast.error("Something went wrong");
 
             } finally {
                 setLoading(false);
             }
         };
         fetchPosts()
-    }, [setPosts]);
+    }, [setLoading, setPosts]);
 
     return (
         <></>

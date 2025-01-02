@@ -45,7 +45,6 @@ function Search() {
         >
             <div className={`flex items-center border-2 rounded-full py-2 shadow-sm`}>
                 <input
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     onChange={(e) => setSearchText(e.target.value)}
                     value={searchText}
                     type="text"

@@ -15,7 +15,8 @@ const nextConfig: NextConfig = {
             {protocol: "https", hostname: "cdn.pixabay.com"}
         ]
     },
-    output: "standalone"
+    output: "standalone",
+    distDir: '../API/wwwroot',
 };
 
 export default nextConfig;

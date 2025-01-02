@@ -12,6 +12,7 @@ import AvailableFriendActions from "@/app/friends/AvailableFriendActions";
 import Modal from "@/app/components/Modal";
 import ShowAllFriends from "@/app/friends/ShowAllFriends";
 import ProfileSettings from "@/app/account/profile/[id]/ProfileSettings";
+import {CustomError} from "@/types";
 
 
 type Props = {
@@ -37,12 +38,16 @@ function Profile({id}: Props) {
                 const data = await getProfileInfo(id)
 
                 if(data.error)
-                    throw data.error
+                    throw { message: data.error.message, status: data.error.status } as CustomError;
 
                 setNameLastName(`${data.firstName} ${data.lastName}`);
 
-            } catch (error: any) {
-                toast.error(error.message);
+            } catch (error: unknown) {
+                if (error && (error as CustomError).message) {
+                    toast.error((error as CustomError).message);
+                } else {
+                    toast.error("An unexpected error occurred.");
+                }
             }
 
         }
@@ -70,13 +75,15 @@ function Profile({id}: Props) {
 
                 </div>
                 <div className={`flex justify-between mt-24 mb-10`}>
+
                     <div className={`w-1/2`}>
                         <span className={`font-semibold text-black text-lg`}>
                             Bio:
                         </span>
                         <span className={`flex w-[100%]  justify-end text-black text-justify`}>
-                            Browse through the icons below to find the one you need. The search field supports synonyms—for example,
-                            try searching for "hamburger" or "logout."
+                            Lorem ipsum odor amet, consectetuer adipiscing elit. Fames justo fames purus integer
+                            purus morbi vestibulum parturient. Non pulvinar vestibulum, nascetur efficitur nisl porta.
+                            Convallis vivamus eu amet proin habitant faucibus nunc.
                         </span>
                     </div>
                     <div className={`relative h-10`}>

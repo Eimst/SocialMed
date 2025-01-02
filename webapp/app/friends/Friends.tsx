@@ -6,7 +6,7 @@ import Friend from "@/app/friends/Friend";
 import {useFriendStore} from "@/hooks/useFriendStore";
 
 type Props = {
-    setShowFriends: any
+    setShowFriends: (showFriends: boolean) => void;
 }
 
 function Friends({setShowFriends}: Props) {

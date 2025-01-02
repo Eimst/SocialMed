@@ -1,13 +1,12 @@
 import React from 'react';
 import {deleteFriendRequest, getFriendStatus, updateFriendStatus} from "@/app/actions/friendActions";
 import toast from "react-hot-toast";
-import {IoPersonAddSharp} from "react-icons/io5";
 import {useFriendStore} from "@/hooks/useFriendStore";
 import {FaUserAltSlash, FaUserCheck} from "react-icons/fa";
 
 type Props = {
     userId: string;
-    setStatus: any;
+    setStatus: (value: string) => void;
 }
 
 function NeedToConfirmStatus({userId, setStatus}: Props) {

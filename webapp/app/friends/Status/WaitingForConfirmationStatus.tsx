@@ -6,7 +6,7 @@ import {FaUserAltSlash} from "react-icons/fa";
 
 type Props = {
     userId: string;
-    setStatus: any;
+    setStatus: (value: string) => void;
 }
 
 function WaitingForConfirmationStatus({userId, setStatus}: Props) {

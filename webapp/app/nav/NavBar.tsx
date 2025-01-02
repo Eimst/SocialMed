@@ -6,7 +6,6 @@ import Logo from "@/app/nav/Logo";
 import UserActions from "@/app/nav/UserActions";
 import LoginButton from "@/app/nav/LoginButton";
 import {useUserStore} from "@/hooks/useUserStore";
-import toast from "react-hot-toast";
 import {getUserInfo} from "@/app/actions/userActions";
 
 
@@ -16,14 +15,8 @@ function NavBar() {
 
     useEffect(() => {
         const getUser = async () => {
-            try {
-                await getUserInfo();
-            } catch (error: any) {
-                toast.error(error.message);
-            } finally {
-                setIsLoading(false);
-            }
-
+            await getUserInfo();
+            setIsLoading(false);
         }
         getUser();
     }, []);

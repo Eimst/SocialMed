@@ -7,7 +7,7 @@ import {useFriendStore} from "@/hooks/useFriendStore";
 
 type Props = {
     userId: string;
-    setStatus: any;
+    setStatus: (value: string) => void;
 }
 
 function FriendStatus({userId, setStatus}: Props) {

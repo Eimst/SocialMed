@@ -11,7 +11,7 @@ import {useUserStore} from "@/hooks/useUserStore";
 
 type Props = {
     postId: string
-    setCommenting: any
+    setCommenting: (value: boolean) => void
 }
 
 function AddComment({postId, setCommenting}: Props) {
@@ -44,8 +44,12 @@ function AddComment({postId, setCommenting}: Props) {
             setCommenting(false);
             addComments(postId, createdComment);
 
-        } catch (error: any) {
-            toast.error(error.message);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                toast.error(error.message);
+            } else {
+                toast.error("An unexpected error occurred.");
+            }
         }
     };
 

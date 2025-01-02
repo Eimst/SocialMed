@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 
 type Props = {
     userId: string;
-    setStatus: any;
+    setStatus: (value: string) => void;
 }
 
 

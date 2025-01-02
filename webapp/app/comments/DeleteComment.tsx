@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import {useUserStore} from "@/hooks/useUserStore";
 import {useCommentStore} from "@/hooks/useCommentStore";
 import {IoTrashOutline} from "react-icons/io5";
-import {Comment} from '@/types'
+import {Comment, CustomError} from '@/types'
 
 type Props = {
     comment: Comment
@@ -24,12 +24,16 @@ function DeleteComment({comment}: Props) {
             const res = await deleteCommentById(comment.postId, comment.id);
 
             if (res.error)
-                throw res.error;
+                throw { message: res.error.message, status: res.error.status } as CustomError;
 
             deleteComment(comment.postId, comment.id)
             toast.success('Comment was deleted');
-        } catch (error: any) {
-            toast.error(error.message);
+        } catch (error: unknown) {
+            if (error && (error as CustomError).message) {
+                toast.error((error as CustomError).message);
+            } else {
+                toast.error("An unexpected error occurred.");
+            }
         }
     }
 

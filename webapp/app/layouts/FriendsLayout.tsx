@@ -23,8 +23,8 @@ export default function FriendsLayout({children}: { children: React.ReactNode })
                     throw data.error
 
                 setFriends(data)
-            } catch (error: any) {
-                console.log(error)
+            } catch {
+
             }
         }
 
@@ -43,18 +43,21 @@ export default function FriendsLayout({children}: { children: React.ReactNode })
             {children}
 
             {/* Fixed Friends Button */}
-            {isOpen ? (
-                <div className="w-[20%] fixed bottom-0 right-2 z-49 justify-end">
-                    <Friends setShowFriends={setOpen}/>
-                </div>
-            ) : (
-                <button
-                    className="bg-red-600 rounded-full p-3 fixed bottom-5 right-5 z-49"
-                    onClick={() => setOpen(true)}
-                >
-                    <LiaUserFriendsSolid color="white" size={45}/>
-                </button>
-            )}
+            {
+                user && (isOpen ? (
+                    <div className="w-[20%] fixed bottom-0 right-2 z-49 justify-end">
+                        <Friends setShowFriends={setOpen}/>
+                    </div>
+                ) : (
+                    <button
+                        className="bg-red-600 rounded-full p-3 fixed bottom-5 right-5 z-49"
+                        onClick={() => setOpen(true)}
+                    >
+                        <LiaUserFriendsSolid color="white" size={45}/>
+                    </button>
+                ))
+            }
+
         </div>
     );
 }

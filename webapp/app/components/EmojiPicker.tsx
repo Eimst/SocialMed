@@ -3,7 +3,7 @@ import Picker from '@emoji-mart/react';
 import data from '@emoji-mart/data';
 
 type Props = {
-    addEmoji: any
+    addEmoji: (emoji: { native: string }) => void;
 }
 
 function EmojiPicker({addEmoji}: Props) {

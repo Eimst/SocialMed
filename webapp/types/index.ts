@@ -40,3 +40,8 @@ export interface Friend {
     status: string
     dateCreated: string
 }
+
+export interface CustomError {
+    message: string
+    status: number
+}

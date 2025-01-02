@@ -1,4 +1,6 @@
-import type {Metadata} from "next";
+'use client'
+
+
 import "./globals.css";
 import React from "react";
 import NavBar from "@/app/nav/NavBar";
@@ -6,10 +8,10 @@ import ToasterProvider from "@/app/providers/ToastProvider";
 import FriendsLayout from "@/app/layouts/FriendsLayout";
 import FetchPosts from "@/app/utils/FetchPosts";
 
-export const metadata: Metadata = {
-    title: "SocialMed",
-    description: "Mini social media web application",
-};
+// export const metadata: Metadata = {
+//     title: "SocialMed",
+//     description: "Mini social media web application",
+// };
 
 export default function RootLayout({
                                        children,
@@ -20,12 +22,16 @@ export default function RootLayout({
 
     return (
         <html lang="en">
+        <head>
+            <title>SocialMed</title>
+            <meta name="description" content="Mini social media web application"/>
+        </head>
         <body
         >
         <FetchPosts/>
         <ToasterProvider/>
 
-        <NavBar />
+        <NavBar/>
 
         <main className="container max-w-full">
             <FriendsLayout>

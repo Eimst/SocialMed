@@ -18,12 +18,12 @@ function ShowAllFriends({userId}: Props) {
                     throw data.error
 
                 setFriends(data)
-            } catch (error: any) {
-                console.log(error)
+            } catch {
+
             }
         }
         getFriends();
-    }, [setFriends]);
+    }, [setFriends, userId]);
 
     return (
         <div>

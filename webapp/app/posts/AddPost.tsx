@@ -7,6 +7,7 @@ import {IoEarthSharp} from "react-icons/io5";
 import {Button} from "@mui/material";
 import {usePostStore} from "@/hooks/usePostStore";
 import {useUserStore} from "@/hooks/useUserStore";
+import {CustomError} from "@/types";
 
 
 function AddPost() {
@@ -32,14 +33,18 @@ function AddPost() {
             const createdPost = await createPost(newPost);
 
             if (createdPost.error) {
-                throw createdPost.error
+                throw { message: createdPost.error.message, status: createdPost.error.status } as CustomError;
             }
             setContent('');
             setIsEmojiActive(false);
             addPost(createdPost)
 
-        } catch (error: any) {
-            toast.error(error.message);
+        } catch (error: unknown) {
+            if (error && (error as CustomError).message) {
+                toast.error((error as CustomError).message);
+            } else if ((error as Error).message){
+                toast.error((error as Error).message);
+            }
         }
     };
 
@@ -54,7 +59,7 @@ function AddPost() {
     return (
         <div className={`p-5 bg-gray-50 rounded-lg shadow-md border-2 border-gray-100 mt-5`}>
             <h2 className={`flex justify-center text-xl text-black font-semibold mb-5`}>
-                Share what's on your mind
+                Share what&apos;s on your mind
             </h2>
             <div className={`rounded-lg`}>
                 <form onSubmit={handleSubmit}>

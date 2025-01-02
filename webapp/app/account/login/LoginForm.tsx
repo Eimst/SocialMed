@@ -14,8 +14,10 @@ function LoginForm() {
 
     const router = useRouter();
 
-    const {control, handleSubmit, reset,
-        formState: {isSubmitting, isValid}} = useForm({
+    const {
+        control, handleSubmit, reset,
+        formState: {isSubmitting, isValid}
+    } = useForm({
         mode: 'onTouched'
     })
 
@@ -30,6 +32,7 @@ function LoginForm() {
             router.push('/');
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
+            reset({password: '', email: data.email});
             toast.error(`${error.status} ${error.message}`);
         }
     }
@@ -43,7 +46,13 @@ function LoginForm() {
                     name="email"
                     control={control}
                     type="email"
-                    rules={{required: 'Email is required'}}
+                    rules={{
+                        required: 'Email is required',
+                        pattern: {
+                            value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                            message: 'Please enter a valid email address'
+                        }
+                    }}
                 />
 
                 <Input
@@ -68,7 +77,8 @@ function LoginForm() {
                 </div>
             </form>
             <div className={`flex justify-center mt-2`}>
-                <span className={`text-sm`}>Don't have an account? <Link href="/account/register" className={`text-blue-500`}>Register</Link></span>
+                <span className={`text-sm`}>Don&apos;t have an account? <Link href="/account/register"
+                                                                         className={`text-blue-500`}>Register</Link></span>
             </div>
         </div>
     );

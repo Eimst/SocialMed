@@ -4,7 +4,7 @@ import {useUserStore} from "@/hooks/useUserStore";
 import toast from "react-hot-toast";
 import {usePostStore} from "@/hooks/usePostStore";
 import {deletePost} from "@/app/actions/postActions";
-import {Post} from "@/types";
+import {CustomError, Post} from "@/types";
 
 type Props = {
     post: Post;
@@ -24,12 +24,16 @@ function DeletePost({post}: Props) {
             const res = await deletePost(post.id);
 
             if (res.error)
-                throw res.error;
+                throw { message: res.error.message, status: res.error.status } as CustomError;
 
             removePost(post.id);
             toast.success('Post was deleted');
-        } catch (error: any) {
-            toast.error(error.message);
+        } catch (error: unknown) {
+            if (error && (error as CustomError).message) {
+                toast.error((error as CustomError).message);
+            } else {
+                toast.error("An unexpected error occurred.");
+            }
         }
     }
 
