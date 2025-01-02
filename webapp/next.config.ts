@@ -16,7 +16,6 @@ const nextConfig: NextConfig = {
         ]
     },
     output: "standalone",
-    distDir: '../API/wwwroot',
 };
 
 export default nextConfig;

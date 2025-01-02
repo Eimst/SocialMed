@@ -48,6 +48,7 @@ app.MapControllers();
 
 app.MapGroup("api").MapIdentityApi<AppUser>();
 
+
 try
 {
     using var scope = app.Services.CreateScope();

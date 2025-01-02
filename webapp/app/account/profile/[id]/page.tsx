@@ -1,3 +1,4 @@
+
 import React from 'react';
 import Profile from "@/app/account/profile/[id]/Profile";
 
