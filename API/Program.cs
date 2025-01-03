@@ -34,11 +34,16 @@ builder.Services.AddIdentityApiEndpoints<AppUser>()
 
 var app = builder.Build();
 
-app.UseCors(x => x
-    .AllowAnyHeader()
-    .AllowAnyMethod()
-    .AllowCredentials()
-    .WithOrigins("http://localhost:3000", "https://localhost:3000"));
+var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
+
+app.UseCors(x =>
+{
+    if (allowedOrigins != null)
+        x.AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials()
+            .WithOrigins(allowedOrigins);
+});
 
 app.UseAuthentication();
 app.UseAuthorization();

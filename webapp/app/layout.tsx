@@ -36,7 +36,6 @@ export default function RootLayout({
             <FriendsLayout>
                 {children}
             </FriendsLayout>
-
         </main>
         </body>
         </html>

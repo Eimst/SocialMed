@@ -7,6 +7,7 @@ import Friends from '@/app/friends/Friends';
 import {useUserStore} from "@/hooks/useUserStore";
 import {getAllFriendsByUserId} from "@/app/actions/friendActions";
 import {useLoadingStore} from "@/hooks/useLoadingStore";
+import UpdateNewsBoard from "@/app/components/UpdateNewsBoard";
 
 export default function FriendsLayout({children}: { children: React.ReactNode }) {
     const setFriends = useFriendStore((state) => state.setFriends);
@@ -39,10 +40,15 @@ export default function FriendsLayout({children}: { children: React.ReactNode })
 
     return (
         <div className="relative w-full h-full">
-            {/* Page Content */}
+
+            {
+                <div className="w-[20%] fixed top-[15%] lef-0 pl-5 text-justify z-49 justify-end">
+                    <UpdateNewsBoard />
+                </div>
+            }
+
             {children}
 
-            {/* Fixed Friends Button */}
             {
                 user && (isOpen ? (
                     <div className="w-[20%] fixed bottom-0 right-2 z-49 justify-end">

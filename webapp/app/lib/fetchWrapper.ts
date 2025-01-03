@@ -1,6 +1,6 @@
 'use client'
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://localhost:7001/api';
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 
 const getHeaders : (method: string, body: object) => RequestInit = (method: string, body: object) => {
