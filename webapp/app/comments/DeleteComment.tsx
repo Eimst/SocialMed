@@ -2,7 +2,6 @@ import React from 'react';
 import {deleteCommentById} from "@/app/actions/commentActions";
 import toast from "react-hot-toast";
 import {useUserStore} from "@/hooks/useUserStore";
-import {useCommentStore} from "@/hooks/useCommentStore";
 import {IoTrashOutline} from "react-icons/io5";
 import {Comment, CustomError} from '@/types'
 
@@ -13,7 +12,7 @@ type Props = {
 function DeleteComment({comment}: Props) {
     const user = useUserStore(state => state.user);
 
-    const deleteComment = useCommentStore(state => state.deleteCommentByPost);
+    // const deleteComment = useCommentStore(state => state.deleteCommentByPost);
     let showDeleteButton = false;
 
     if (user?.profileId === comment.userId)
@@ -26,7 +25,7 @@ function DeleteComment({comment}: Props) {
             if (res.error)
                 throw { message: res.error.message, status: res.error.status } as CustomError;
 
-            deleteComment(comment.postId, comment.id)
+            // deleteComment(comment.postId, comment.id)
             toast.success('Comment was deleted');
         } catch (error: unknown) {
             if (error && (error as CustomError).message) {

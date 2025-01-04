@@ -1,17 +1,19 @@
 using API.DTOs;
 using API.Extensions;
 using API.Helpers;
+using API.SignalR;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Specification;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class PostsController(IUnitOfWork unit) : ControllerBase
+public class PostsController(IUnitOfWork unit, IHubContext<NotificationHub> hubContext) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<List<PostDto>>> GetAllPosts()
@@ -48,12 +50,12 @@ public class PostsController(IUnitOfWork unit) : ControllerBase
         var newPost = postCreateUpdateDto.ToEntity(userProfile);
         unit.Repository<Post>().Add(newPost);
 
-        if (await unit.Complete())
-        {
-            return CreatedAtAction(nameof(GetPostById), new { id = newPost.Id }, newPost.ToDto());
-        }
+        if (!await unit.Complete()) 
+            return BadRequest("Error while adding post");
+        
+        await hubContext.Clients.All.SendAsync("NewPostCreated", newPost.ToDto());
+        return CreatedAtAction(nameof(GetPostById), new { id = newPost.Id }, newPost.ToDto());
 
-        return BadRequest("Error while adding post");
     }
 
     [Authorize]
@@ -95,10 +97,12 @@ public class PostsController(IUnitOfWork unit) : ControllerBase
 
         unit.Repository<Post>().Remove(post);
 
-        if (await unit.Complete())
-            return NoContent();
+        if (!await unit.Complete()) 
+            return BadRequest("Error while deleting post");
+        
+        await hubContext.Clients.All.SendAsync("PostDeleted", post.Id);
+        return NoContent();
 
-        return BadRequest("Error while deleting post");
     }
 
     private async Task<bool> IsPostIsCurrentUser(string id)

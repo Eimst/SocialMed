@@ -1,3 +1,4 @@
+using API.SignalR;
 using Core.Entities;
 using Core.Interfaces;
 using Infrastructure.Data;
@@ -31,7 +32,7 @@ builder.Services.AddIdentityApiEndpoints<AppUser>()
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<MediaContext>();
 
-
+builder.Services.AddSignalR();
 var app = builder.Build();
 
 var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
@@ -53,6 +54,7 @@ app.MapControllers();
 
 app.MapGroup("api").MapIdentityApi<AppUser>();
 
+app.MapHub<NotificationHub>("/hub/notifications");
 
 try
 {

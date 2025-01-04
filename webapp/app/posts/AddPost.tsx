@@ -5,7 +5,6 @@ import {createPost} from "@/app/actions/postActions";
 import ContentForm from "@/app/components/ContentForm";
 import {IoEarthSharp} from "react-icons/io5";
 import {Button} from "@mui/material";
-import {usePostStore} from "@/hooks/usePostStore";
 import {useUserStore} from "@/hooks/useUserStore";
 import {CustomError} from "@/types";
 
@@ -13,7 +12,7 @@ import {CustomError} from "@/types";
 function AddPost() {
     const [content, setContent] = useState("");
     const [isEmojiActive, setIsEmojiActive] = useState(false);
-    const addPost = usePostStore(state => state.addPost)
+    // const addPost = usePostStore(state => state.addPost)
     const user = useUserStore(state => state.user);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -37,7 +36,7 @@ function AddPost() {
             }
             setContent('');
             setIsEmojiActive(false);
-            addPost(createdPost)
+            // addPost(createdPost)
 
         } catch (error: unknown) {
             if (error && (error as CustomError).message) {

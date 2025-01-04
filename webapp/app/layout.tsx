@@ -6,6 +6,7 @@ import NavBar from "@/app/nav/NavBar";
 import ToasterProvider from "@/app/providers/ToastProvider";
 import FriendsLayout from "@/app/layouts/FriendsLayout";
 import FetchPosts from "@/app/utils/FetchPosts";
+import SignalR from "@/app/providers/SignalR";
 
 // export const metadata: Metadata = {
 //     title: "SocialMed",
@@ -19,6 +20,7 @@ export default function RootLayout({
 
 }>) {
 
+    const notifyUrl = process.env.NOTIFY_URL ?? "";
     return (
         <html lang="en">
         <head>
@@ -33,9 +35,12 @@ export default function RootLayout({
         <NavBar/>
 
         <main className="container max-w-full">
-            <FriendsLayout>
-                {children}
-            </FriendsLayout>
+            <SignalR notifyUrl={notifyUrl}>
+                <FriendsLayout>
+                    {children}
+                </FriendsLayout>
+            </SignalR>
+
         </main>
         </body>
         </html>

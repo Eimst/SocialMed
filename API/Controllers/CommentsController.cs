@@ -2,17 +2,19 @@ using System.Security.Claims;
 using API.DTOs;
 using API.Extensions;
 using API.Helpers;
+using API.SignalR;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Specification;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace API.Controllers;
 
 [ApiController]
 [Route("api/posts/{postId}/[controller]")]
-public class CommentsController(IUnitOfWork unit) : ControllerBase
+public class CommentsController(IUnitOfWork unit, IHubContext<NotificationHub> hubContext) : ControllerBase
 {
     
     [HttpGet]
@@ -63,12 +65,12 @@ public class CommentsController(IUnitOfWork unit) : ControllerBase
         
         unit.Repository<Comment>().Add(newComment);
 
-        if (await unit.Complete())
-        {
-            return CreatedAtAction(nameof(GetCommentById), new { postId, id = newComment.Id  }, newComment.ToDto(postId));
-        }
+        if (!await unit.Complete()) 
+            return BadRequest("Error while adding post");
+        
+        await hubContext.Clients.All.SendAsync("NewCommentCreated", newComment.ToDto(postId));
+        return CreatedAtAction(nameof(GetCommentById), new { postId, id = newComment.Id  }, newComment.ToDto(postId));
 
-        return BadRequest("Error while adding post");
     }
 
     [Authorize]
@@ -92,10 +94,12 @@ public class CommentsController(IUnitOfWork unit) : ControllerBase
             return NotFound();
         
         unit.Repository<Comment>().Remove(comment);
+
+        if (!await unit.Complete()) 
+            return BadRequest("Error while deleting post");
         
-        if (await unit.Complete())
-            return NoContent();
-        
-        return BadRequest("Error while deleting post");
+        await hubContext.Clients.All.SendAsync("CommentDeleted", comment.Id, comment.PostId);
+        return NoContent();
+
     }
 }

@@ -6,7 +6,6 @@ import SendIcon from '@mui/icons-material/Send';
 import {createComment} from "@/app/actions/commentActions";
 import toast from "react-hot-toast";
 import ContentForm from "@/app/components/ContentForm";
-import {useCommentStore} from "@/hooks/useCommentStore";
 import {useUserStore} from "@/hooks/useUserStore";
 
 type Props = {
@@ -16,7 +15,7 @@ type Props = {
 
 function AddComment({postId, setCommenting}: Props) {
     const [content, setContent] = useState("");
-    const addComments = useCommentStore(state => state.addCommentByPost);
+    // const addComments = useCommentStore(state => state.addCommentByPost);
     const user = useUserStore(state => state.user);
 
     const [isEmojiActive, setIsEmojiActive] = useState(false);
@@ -42,7 +41,7 @@ function AddComment({postId, setCommenting}: Props) {
             }
             setContent('');
             setCommenting(false);
-            addComments(postId, createdComment);
+            // addComments(postId, createdComment);
 
         } catch (error: unknown) {
             if (error instanceof Error) {

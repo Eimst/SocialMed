@@ -2,7 +2,6 @@ import React from 'react';
 import {IoTrashOutline} from "react-icons/io5";
 import {useUserStore} from "@/hooks/useUserStore";
 import toast from "react-hot-toast";
-import {usePostStore} from "@/hooks/usePostStore";
 import {deletePost} from "@/app/actions/postActions";
 import {CustomError, Post} from "@/types";
 
@@ -13,7 +12,7 @@ type Props = {
 function DeletePost({post}: Props) {
     const user = useUserStore(state => state.user);
 
-    const removePost = usePostStore(state => state.removePost)
+    // const removePost = usePostStore(state => state.removePost)
     let showDeleteButton = false;
 
     if(user?.profileId === post.userId)
@@ -26,7 +25,7 @@ function DeletePost({post}: Props) {
             if (res.error)
                 throw { message: res.error.message, status: res.error.status } as CustomError;
 
-            removePost(post.id);
+            // removePost(post.id);
             toast.success('Post was deleted');
         } catch (error: unknown) {
             if (error && (error as CustomError).message) {
