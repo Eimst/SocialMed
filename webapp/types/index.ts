@@ -1,4 +1,5 @@
 
+
 export interface Post {
     id: string
     content: string
@@ -44,4 +45,12 @@ export interface Friend {
 export interface CustomError {
     message: string
     status: number
+}
+
+export interface MessageType {
+    message: string
+    sender: UserProfileInfo
+    receiver: UserProfileInfo
+    dateCreated: string
+    isRead: boolean
 }

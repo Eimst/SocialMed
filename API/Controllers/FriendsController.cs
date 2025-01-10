@@ -104,12 +104,11 @@ public class FriendsController(IUnitOfWork unit) : ControllerBase
         
         unit.Repository<Friend>().Update(existingFriendRelation);
 
-        if (await unit.Complete())
-        {
-            return NoContent();
-        }
+        if (!await unit.Complete()) 
+            return BadRequest("Error while saving request");
         
-        return BadRequest("Error while saving request");
+        return NoContent();
+
     }
     
     
@@ -160,11 +159,11 @@ public class FriendsController(IUnitOfWork unit) : ControllerBase
         
         unit.Repository<Friend>().Remove(existingFriendRelation);
 
-        if (await unit.Complete())
-        {
-            return NoContent();
-        }
-        
-        return BadRequest("Error while saving request");
+        if (!await unit.Complete()) 
+            return BadRequest("Error while saving request");
+            
+        return NoContent();
+
     }
+    
 }

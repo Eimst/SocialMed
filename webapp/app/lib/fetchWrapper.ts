@@ -71,7 +71,6 @@ async function handleResponse(response: Response) {
     catch {
         data = text;
     }
-
     if (response.ok) {
         return data || response.status;
     } else {

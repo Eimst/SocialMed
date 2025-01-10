@@ -8,11 +8,15 @@ public class UserProfile : BaseEntity, IDtoConvertible
     public required string LastName { get; set; }
     public string? ProfilePictureUrl { get; set; }
     public string? Bio { get; set; }
+    
+    public required string PrivateKey { get; set; }
+    
+    public required string PublicKey { get; set; }
 
     public List<Comment> Comments { get; set; } = [];
     public List<Post> Posts { get; set; } = [];
     public List<Like> Likes { get; set; } = [];
-
+    
     public List<Friend> SentFriendRequests { get; set; } = [];
     public List<Friend> ReceivedFriendRequests { get; set; } = [];
     

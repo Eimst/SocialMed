@@ -1,4 +1,4 @@
-using System.Security.Claims;
+
 using API.DTOs;
 using API.Extensions;
 using API.Helpers;
@@ -51,7 +51,7 @@ public class LikesController(IUnitOfWork unit) : ControllerBase
         }
         
         if (userProfile.Likes.Any(x => x.PostId == postId))
-            return BadRequest("You cant't like this post again");
+            return BadRequest("You can't like this post again");
         
         var post = await unit.Repository<Post>().GetByIdAsync(postId);
         

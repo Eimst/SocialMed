@@ -10,9 +10,7 @@ import {useRouter} from "next/navigation";
 import Link from "next/link";
 
 function RegisterForm() {
-
     const router = useRouter();
-
     const {
         control, handleSubmit, reset,
         formState: {isSubmitting, isValid}
@@ -22,18 +20,24 @@ function RegisterForm() {
 
     const onSubmit = async (data: FieldValues) => {
         try {
+            toast.dismiss();
             const res = await register(data);
             if (res.error) {
                 throw res.error
             }
-
-            router.push('/account/login');
             toast.success(`Successfully registered, please login`);
-
+            router.push('/account/login');
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             reset({email: '', password: '', firstName: data.firstName, lastName: data.lastName});
-            toast.error(`${error.status} ${error.message}`);
+            toast.error(`${error.message}`, {
+                duration: 80000,
+                style: {
+                    background: '#ffe0e0',
+                    color: 'black',
+                    border: '1px solid #f5c6cb',
+                },
+            });
         }
     }
 

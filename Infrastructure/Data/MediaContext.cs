@@ -1,8 +1,6 @@
 using Core.Entities;
-using Infrastructure.Config;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Infrastructure.Data;
 
@@ -17,6 +15,8 @@ public class MediaContext(DbContextOptions<MediaContext> options) : IdentityDbCo
     public DbSet<UserProfile> UserProfiles { get; set; }
 
     public DbSet<Friend> Friends { get; set; }
+    
+    public DbSet<Message> Messages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

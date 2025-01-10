@@ -26,7 +26,6 @@ function Search() {
             searchContainerRef.current &&
             !searchContainerRef.current.contains(event.target as Node)
         ) {
-            console.log('Mouse clicked outside');
             setIsVisible(false); // Hide the element
         }
     };

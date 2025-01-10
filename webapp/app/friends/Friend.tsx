@@ -6,15 +6,23 @@ import User from "@/app/components/User";
 type Props = {
     user: UserProfileInfo
     showMessageIcon?: boolean
+    setChattingWithFriend?: (chattingWithFriend: UserProfileInfo) => void;
 }
 
-function Friend({user, showMessageIcon = true}: Props) {
+function Friend({user, showMessageIcon = true, setChattingWithFriend}: Props) {
+
+    const handleMessageClick = () => {
+        if (setChattingWithFriend) {
+            setChattingWithFriend(user)
+        }
+    }
+
     return (
         <div className={`flex gap-5 items-center px-3 py-5 shadow-sm`}>
             <User user={user}/>
             {
                 showMessageIcon && (
-                    <div className={`ml-auto`}>
+                    <div className={`ml-auto cursor-pointer`} onClick={handleMessageClick}>
                         <MessageIconWithCount/>
                     </div>
                 )

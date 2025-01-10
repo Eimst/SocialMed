@@ -9,6 +9,7 @@ import AddComment from "@/app/comments/AddComment";
 import {formatDate} from "date-fns";
 import {useCommentStore} from "@/hooks/useCommentStore";
 import DeletePost from "@/app/posts/DeletePost";
+import {normalizeDateString} from "@/app/lib/dateNormalizer";
 
 
 type Props = {
@@ -48,7 +49,7 @@ function PostCard({post}: Props) {
                 <p className="text-md text-gray-900 justify-between p-5">
                     {post.content}
                     <span className={`text-xs block pt-4`}>
-                         {formatDate(new Date(post.dateCreated), 'PPP HH:mm')}
+                         {formatDate(new Date(normalizeDateString(post.dateCreated)), 'PPP HH:mm')}
                     </span>
                 </p>
 

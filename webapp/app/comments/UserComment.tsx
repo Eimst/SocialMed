@@ -3,6 +3,7 @@ import User from "@/app/components/User";
 import {Comment} from "@/types";
 import {formatDate} from "date-fns";
 import DeleteComment from "@/app/comments/DeleteComment";
+import {normalizeDateString} from "@/app/lib/dateNormalizer";
 
 type Props = {
     comment: Comment
@@ -22,7 +23,7 @@ function UserComment({comment}: Props) {
                 </span>
 
                 <span className={'text-xs'}>
-                    {formatDate(new Date(comment.dateCreated), 'PPP HH:mm')}
+                    {formatDate(new Date(normalizeDateString(comment.dateCreated)), 'PPP HH:mm')}
                 </span>
 
             </div>

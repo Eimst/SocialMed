@@ -10,4 +10,6 @@ public interface ISpecification<T>
     
     public Expression<Func<T, object>>? OrderByDescending { get; set; }
     
+    public Expression<Func<T, object>>? OrderByAscending { get; set; }
+    
 }

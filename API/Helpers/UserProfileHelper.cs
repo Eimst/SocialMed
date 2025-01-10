@@ -19,4 +19,11 @@ public static class UserProfileHelper
         
         return userProfile;
     }
+    
+    public static string GetUserIdFromClaims(ClaimsPrincipal user)
+    {
+        return user.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value!;
+    }
+
+    
 }

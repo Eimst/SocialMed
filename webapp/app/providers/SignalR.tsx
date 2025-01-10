@@ -3,8 +3,9 @@
 import {ReactNode, useCallback, useEffect, useRef} from 'react';
 import {HubConnection, HubConnectionBuilder} from "@microsoft/signalr";
 import {usePostStore} from "@/hooks/usePostStore";
-import {Post, Comment} from "@/types";
+import {Post, Comment, MessageType} from "@/types";
 import {useCommentStore} from "@/hooks/useCommentStore";
+import {useMessageStore} from "@/hooks/useMessageStore";
 
 type Props = {
     children: ReactNode
@@ -17,6 +18,8 @@ function SignalR({children, notifyUrl}: Props) {
     const deletePost = usePostStore(state => state.removePost);
     const addComment = useCommentStore(state => state.addCommentByPost);
     const deleteComment = useCommentStore(state => state.deleteCommentByPost);
+    const addMessage = useMessageStore(state => state.addMessageByUserId);
+    const markAsRead = useMessageStore(state => state.markAsRead);
 
     const handlePostCreated = useCallback((post: Post) => {
         addPost(post);
@@ -34,6 +37,14 @@ function SignalR({children, notifyUrl}: Props) {
         deleteComment(postId, commentId);
     }, [deleteComment]);
 
+    const handleMessageCreated = useCallback((message: MessageType) => {
+        addMessage(message.sender.profileId, message)
+    }, [addMessage]);
+
+    const handleMarkAsRead = useCallback((userId: string) => {
+        markAsRead(userId);
+    }, [markAsRead]);
+
     useEffect(() => {
         if (!connection.current) {
             connection.current = new HubConnectionBuilder()
@@ -49,15 +60,19 @@ function SignalR({children, notifyUrl}: Props) {
             connection.current.on('PostDeleted', handlePostDeleted);
             connection.current.on('NewCommentCreated', handleCommentCreated);
             connection.current.on('CommentDeleted', handleCommentDeleted);
+            connection.current.on('MessageCreated', handleMessageCreated);
+            connection.current.on('MessageRead', handleMarkAsRead);
 
             return () => {
                 connection.current?.off('NewPostCreated', handlePostCreated);
                 connection.current?.off('PostDeleted', handlePostDeleted);
                 connection.current?.off('NewCommentCreated', handleCommentCreated);
                 connection.current?.off('CommentDeleted', handleCommentDeleted);
+                connection.current?.off('MessageCreated', handleMessageCreated);
+                connection.current?.off('MessageRead', handleMarkAsRead);
             }
         }
-    }, [handleCommentCreated, handleCommentDeleted, handlePostCreated, handlePostDeleted, notifyUrl]);
+    }, [handleCommentCreated, handleCommentDeleted, handleMessageCreated, handlePostCreated, handlePostDeleted, notifyUrl]);
 
     return (
         children

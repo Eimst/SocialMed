@@ -18,6 +18,9 @@ public static class SpecificationEvaluator <T> where T : BaseEntity
         if (specification.OrderByDescending != null) 
             query = query.OrderByDescending(specification.OrderByDescending);
         
+        if (specification.OrderByAscending != null) 
+            query = query.OrderBy(specification.OrderByAscending);
+        
         return query;
     }
 }

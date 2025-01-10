@@ -33,7 +33,7 @@ function LoginForm() {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             reset({password: '', email: data.email});
-            toast.error(`${error.status} ${error.message}`);
+            toast.error(`${error.message}`);
         }
     }
 

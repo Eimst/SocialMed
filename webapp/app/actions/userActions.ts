@@ -25,7 +25,7 @@ export const register = async (data: FieldValues) => {
 }
 
 export const login = async (data: FieldValues) => {
-    const res = await fetchWrapper.post('/login?useCookies=true', data)
+    const res = await fetchWrapper.post('/account/login?useCookies=true', data)
 
     if (!res.error) {
         await getUserInfo()

@@ -1,55 +1,67 @@
-using System.Reflection;
-using System.Text.Json;
 using Core.Entities;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 
 namespace Infrastructure.Data;
 
 public static class SeedData
 {
-    public static async Task SeedAsync(MediaContext context, UserManager<AppUser> userManager)
+    public static async Task SeedAsync(MediaContext context, UserManager<AppUser> userManager, IConfiguration configuration)
     {
+        
         // Check if the users already exist
         if (!userManager.Users.Any())
         {
             var user1 = new AppUser
             {
                 Id = Guid.NewGuid().ToString(),
-                UserName = "john.doe",
-                Email = "john.doe@example.com"
+                UserName = "e@test.lt",
+                Email = "e@test.lt"
             };
 
             var user2 = new AppUser
             {
                 Id = Guid.NewGuid().ToString(),
-                UserName = "jane.smith",
-                Email = "jane.smith@example.com"
+                UserName = "v@test.lt",
+                Email = "v@test.lt"
             };
 
             // Create users with default passwords
-            await userManager.CreateAsync(user1, "Pa$$w0rd");
-            await userManager.CreateAsync(user2, "Pa$$w0rd");
+            await userManager.CreateAsync(user1, configuration["AccountPassword"]!);
+            await userManager.CreateAsync(user2, configuration["AccountPassword"]!);
 
+            var encryptionService = new HybridEncryptionService(configuration);
+            var (publicKeyBase64, privateKeyBase64) = encryptionService.GenerateKeys();
+            var encryptedKey = await encryptionService.EncryptKeyAndSaveToAzureKeyVault(privateKeyBase64, user1.Id);
             var profile1 = new UserProfile
             {
-                Id = Guid.Parse("c65064e6-27a2-4066-b0b2-17bb2dd1a36c").ToString(),
+                Id = Guid.Parse("c65064e6-27a2-4066-b0b2-17bb2dd1a36c")
+                    .ToString(),
                 FirstName = "Eimantas",
                 LastName = "Sutk",
                 ProfilePictureUrl = "https://example.com/profiles/john.jpg",
-                Bio = "Hello, I'm John!",
+                Bio = "Hello, I'm Eimantas",
                 UserId = user1.Id,
-                AppUser = user1
+                AppUser = user1,
+                PrivateKey = encryptedKey,
+                PublicKey = publicKeyBase64
             };
 
+            var (publicKey1Base64, privateKey1Base64) = encryptionService.GenerateKeys();
+            var encryptedKey1 = await encryptionService.EncryptKeyAndSaveToAzureKeyVault(privateKey1Base64, user2.Id);
             var profile2 = new UserProfile
             {
-                Id = Guid.NewGuid().ToString(),
-                FirstName = "Tomas",
+                Id = Guid.Parse("765064e6-27a2-4066-b0b2-17bb2dd1a36c")
+                    .ToString(),
+                FirstName = "Vilte",
                 LastName = "Ask",
                 ProfilePictureUrl = "https://example.com/profiles/jane.jpg",
-                Bio = "Jane's profile",
+                Bio = "Hello, I'm Vilte",
                 UserId = user2.Id,
-                AppUser = user2
+                AppUser = user2,
+                PrivateKey = encryptedKey1,
+                PublicKey = publicKey1Base64
             };
 
             context.UserProfiles.AddRange(profile1, profile2);
@@ -139,7 +151,7 @@ public static class SeedData
             };
 
             context.Friends.Add(friend1);
-
+            
             await context.SaveChangesAsync();
         }
     }

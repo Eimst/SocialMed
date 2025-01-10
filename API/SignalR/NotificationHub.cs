@@ -42,4 +42,15 @@ public class NotificationHub(IUnitOfWork unit) : Hub
 
         return user;
     }
+    
+    public static bool IsUserConnected(string userId)
+    {
+        return UserConnections.ContainsKey(userId);
+    }
+    
+    public static string? GetConnectionId(string userId)
+    {
+        UserConnections.TryGetValue(userId, out var connectionId);
+        return connectionId;
+    }
 }

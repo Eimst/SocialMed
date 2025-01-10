@@ -2,6 +2,7 @@ using API.SignalR;
 using Core.Entities;
 using Core.Interfaces;
 using Infrastructure.Data;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +17,13 @@ builder.Services.AddDbContext<MediaContext>(options =>
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+
+builder.Services.AddMemoryCache();
+builder.Services.AddScoped<IHybridEncryptionService, HybridEncryptionService>();
+builder.Services.AddScoped<IHybridDecryptionService, HybridDecryptionService>();
+
+builder.Services.AddScoped<IPrivateKeyCache, PrivateKeyCache>();
 
 builder.Services.AddCors();
 
@@ -24,6 +32,8 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.SameSite = SameSiteMode.None; // Required for cross-origin cookies
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Requires HTTPS
+    options.ExpireTimeSpan = TimeSpan.FromDays(2);
+    options.SlidingExpiration = true;
 });
 
 
@@ -49,10 +59,9 @@ app.UseCors(x =>
 app.UseAuthentication();
 app.UseAuthorization();
 
-
 app.MapControllers();
 
-app.MapGroup("api").MapIdentityApi<AppUser>();
+// app.MapGroup("api").MapIdentityApi<AppUser>();
 
 app.MapHub<NotificationHub>("/hub/notifications");
 
@@ -65,7 +74,10 @@ try
     Console.WriteLine("Starting migrations...");
     await context.Database.MigrateAsync();
     Console.WriteLine("Migrations applied successfully.");
-    await SeedData.SeedAsync(context, userManager);
+    if (app.Environment.IsDevelopment())
+    {
+        await SeedData.SeedAsync(context, userManager, builder.Configuration);
+    }
 }
 
 catch (Exception e)
