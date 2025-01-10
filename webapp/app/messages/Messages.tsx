@@ -63,9 +63,9 @@ function Messages({friend}: Props) {
     return (
         <div className="flex flex-col h-full px-2">
             <div className="flex-grow">
-                {messages.map((message) => (
+                {messages?.length > 0 && (messages.map((message) => (
                     <Message key={message.dateCreated} message={message} />
-                ))}
+                )))}
                 {/* Dummy div to scroll into */}
                 <div ref={bottomRef} />
             </div>

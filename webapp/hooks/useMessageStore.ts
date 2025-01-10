@@ -35,12 +35,13 @@ export const useMessageStore = create<State & Actions>((set, get) => ({
 
     addMessageByUserId: (userId, message) => {
         const {openedMessagesByUserId} = get();
+
         if (openedMessagesByUserId === userId) {
             markMessagesAsRead(userId).then();
             set(state => ({
                 messagesByUserId: {
                     ...state.messagesByUserId,
-                    [userId]: [...(state.messagesByUserId[userId] || []), message],
+                    [userId]: [...(Array.isArray(state.messagesByUserId[userId]) ? state.messagesByUserId[userId] : []), message],
                 },
             }));
         } else {
