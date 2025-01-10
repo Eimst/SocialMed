@@ -53,4 +53,5 @@ public class NotificationHub(IUnitOfWork unit) : Hub
         UserConnections.TryGetValue(userId, out var connectionId);
         return connectionId;
     }
+
 }
