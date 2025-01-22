@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {UserProfileInfo} from "@/types";
 import MessageIconWithCount from "@/app/friends/MessageIconWithCount";
 import User from "@/app/components/User";

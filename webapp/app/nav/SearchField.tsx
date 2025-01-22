@@ -4,7 +4,6 @@ import React, {forwardRef, useEffect, useImperativeHandle, useState} from 'react
 import {UserProfileInfo} from "@/types";
 import {getSearchResults} from "@/app/actions/searchActions";
 import toast from "react-hot-toast";
-import Friend from "@/app/friends/Friend";
 import {useRouter} from "next/navigation";
 import User from "@/app/components/User";
 
