@@ -38,7 +38,7 @@ export interface UserProfileInfo {
 
 export interface Friend {
     userProfileInfo: UserProfileInfo
-    status: string
+    status: FriendStatusType
     dateCreated: string
 }
 
@@ -54,3 +54,12 @@ export interface MessageType {
     dateCreated: string
     isRead: boolean
 }
+
+export interface NotificationType {
+    id: string
+    initiator: UserProfileInfo
+    date: string
+    text: string
+}
+
+export type FriendStatusType = "WaitingForConfirmation" | "NeedToConfirm" | "Friend" | "";

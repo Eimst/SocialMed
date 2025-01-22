@@ -37,8 +37,8 @@ function Profile({id}: Props) {
             try {
                 const data = await getProfileInfo(id)
 
-                if(data.error)
-                    throw { message: data.error.message, status: data.error.status } as CustomError;
+                if (data.error)
+                    throw {message: data.error.message, status: data.error.status} as CustomError;
 
                 setNameLastName(`${data.firstName} ${data.lastName}`);
 
@@ -66,11 +66,12 @@ function Profile({id}: Props) {
                             {nameLastName}
                         </span>
                     {
-                        user?.profileId !== id ? (
-                           <AvailableFriendActions userId={id}/>
-                        ) : (
-                            <ProfileSettings/>
-                        )
+                        user && (
+                            user.profileId !== id ? (
+                                <AvailableFriendActions userId={id}/>
+                            ) : (
+                                <ProfileSettings/>
+                            ))
                     }
 
                 </div>

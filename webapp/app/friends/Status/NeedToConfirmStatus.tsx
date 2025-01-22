@@ -1,31 +1,34 @@
 import React from 'react';
-import {deleteFriendRequest, getFriendStatus, updateFriendStatus} from "@/app/actions/friendActions";
+import {deleteFriendRequest, updateFriendStatus} from "@/app/actions/friendActions";
 import toast from "react-hot-toast";
-import {useFriendStore} from "@/hooks/useFriendStore";
 import {FaUserAltSlash, FaUserCheck} from "react-icons/fa";
+import {useNotificationStore} from "@/hooks/useNotificationStore";
+import {removeNotification} from "@/app/actions/notificationActions";
 
 type Props = {
     userId: string;
-    setStatus: (value: string) => void;
 }
 
-function NeedToConfirmStatus({userId, setStatus}: Props) {
+function NeedToConfirmStatus({userId}: Props) {
+    const notifications = useNotificationStore(state => state.notifications);
 
-    const addFriend = useFriendStore(state => state.addFriend);
+    const deleteNotification = async () => {
+        const notificationId = notifications.find(x => x.initiator.profileId === userId);
+
+        if (notificationId) {
+            const response = await removeNotification(notificationId.id);
+            if (response.error)
+                toast.error(response.error.message)
+        }
+    }
 
     const handleConfirmClick = async () => {
         const res = await updateFriendStatus(userId);
 
         if (res.error) {
-            toast.error(res.error)
+            toast.error(res.error.message);
         } else {
-            setStatus("Friend")
-            const res = await getFriendStatus(userId)
-
-            if (res.error)
-                toast.error(res.error)
-            else
-                addFriend(res)
+            await deleteNotification()
         }
     }
 
@@ -33,9 +36,9 @@ function NeedToConfirmStatus({userId, setStatus}: Props) {
         const res = await deleteFriendRequest(userId);
 
         if (res.error) {
-            toast.error(res.error)
+            toast.error(res.error.message);
         } else {
-            setStatus("")
+            await deleteNotification()
         }
     }
 

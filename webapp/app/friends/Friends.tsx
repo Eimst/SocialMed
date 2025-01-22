@@ -1,10 +1,9 @@
 'use client'
 
-import React, {useState} from 'react';
+import React from 'react';
 import {LiaUserFriendsSolid} from "react-icons/lia";
 import Friend from "@/app/friends/Friend";
 import {useFriendStore} from "@/hooks/useFriendStore";
-import {UserProfileInfo} from "@/types";
 import {IoCaretBack} from "react-icons/io5";
 import Messages from "@/app/messages/Messages";
 import {useMessageStore} from "@/hooks/useMessageStore";
@@ -15,7 +14,9 @@ type Props = {
 
 function Friends({setShowFriends}: Props) {
     const friends = useFriendStore((state) => state.friends);
-    const [chattingWithFriend, setChattingWithFriend] = useState<UserProfileInfo | null>();
+    const setChattingWithFriend = useFriendStore(state => state.setChattingWithFriend);
+    const chattingWithFriend = useFriendStore(state => state.chattingWithFriend);
+
     const setOpenedMessagesByUserId = useMessageStore(state => state.setOpenedMessagesByUserId)
 
     return (

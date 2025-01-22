@@ -6,18 +6,15 @@ import {FaUserAltSlash} from "react-icons/fa";
 
 type Props = {
     userId: string;
-    setStatus: (value: string) => void;
 }
 
-function WaitingForConfirmationStatus({userId, setStatus}: Props) {
+function WaitingForConfirmationStatus({userId}: Props) {
 
     const handleCancelClick = async () => {
         const res = await deleteFriendRequest(userId);
 
         if (res.error) {
-            toast.error(res.error)
-        } else {
-            setStatus("")
+            toast.error(res.error.message)
         }
     }
 

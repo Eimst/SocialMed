@@ -30,4 +30,5 @@ public static class MessageMappingExtension
             IsRead = message.IsRead,
         };
     }
+    
 }

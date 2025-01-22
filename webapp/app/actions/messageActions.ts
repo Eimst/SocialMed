@@ -12,3 +12,11 @@ export const postMessage = async (userId: string, message: string) => {
 export const markMessagesAsRead = async (userId: string) => {
     return await fetchWrapper.put(`/messages/user/${userId}`, {})
 }
+
+export const getChatPreview = async (userId: string) => {
+    return await fetchWrapper.get(`/messages/user/${userId}/preview`)
+}
+
+export const addUserToActiveChats = async (userId: string) => {
+    return await fetchWrapper.post(`/messages/active-chats`, {userId: userId, isDelete: false})
+}

@@ -11,7 +11,6 @@ public static class UserProfileHelper
     {
         var currentUserId = user.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
         
-        // Defensive check
         if (currentUserId == null)
             return null;
         

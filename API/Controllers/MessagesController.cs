@@ -19,7 +19,8 @@ public class MessagesController(
     IHybridDecryptionService hybridDecryptionService,
     IPrivateKeyCache privateKeyCache,
     IMessageRepository messageRepository,
-    IHubContext<NotificationHub> hubContext) : ControllerBase
+    IHubContext<NotificationHub> hubContext,
+    IActiveChatsCache chatsCache) : ControllerBase
 {
     [Authorize]
     [HttpGet("{messageId}")]
@@ -48,6 +49,49 @@ public class MessagesController(
                     : message.EncryptedMessageForSender);
 
             return Ok(message.ToDto(messageContent));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An unexpected error occurred.");
+        }
+    }
+
+    [Authorize]
+    [HttpGet("user/{userId}/preview")]
+    public async Task<ActionResult<MessageDto>> GetChatPreview(string userId)
+    {
+        var currentUserProfile = await UserProfileHelper.GetAuthorizedUserProfile(unit, User);
+        if (currentUserProfile == null)
+            return Forbid();
+
+        var message =
+            await messageRepository.GetByIdWithSpecsAsync(MessageSpecification.ByUserId(currentUserProfile.Id, userId,
+                true));
+
+        var messages =
+            await messageRepository.GetListWithSpecsAsync(
+                MessageSpecification.ByUserIdAndUnread(currentUserProfile.Id, userId));
+
+        if (message == null)
+            return NoContent();
+
+        if (currentUserProfile.Id == userId)
+            return BadRequest("You can't see chat history with yourself.");
+
+        try
+        {
+            var decryptedPrivateKey = privateKeyCache.GetPrivateKey(currentUserProfile.UserId);
+
+            if (decryptedPrivateKey == null)
+                return StatusCode(500, "An error occurred while accessing your session. Please try re-logging.");
+
+            var decryptedMessage = await DecryptPreviewMessage(message, decryptedPrivateKey, currentUserProfile.Id);
+
+            return Ok(new ChatPreviewDto
+            {
+                Message = decryptedMessage,
+                UnreadMessagesCount = messages.Count
+            });
         }
         catch (Exception ex)
         {
@@ -101,16 +145,25 @@ public class MessagesController(
         return decryptedMessages.ToList();
     }
 
+    private async Task<MessageDto> DecryptPreviewMessage(Message message, string privateKey,
+        string currentUserProfileId)
+    {
+        return message.ToDto(await hybridDecryptionService.DecryptMessage(privateKey,
+            currentUserProfileId == message.ReceiverId
+                ? message.EncryptedMessageForReceiver
+                : message.EncryptedMessageForSender));
+    }
+
 
     [Authorize]
     [HttpPost("user/{userId}")]
     public async Task<ActionResult> SendMessage(string userId, SendMessageDto sendMessageDto)
     {
         var currentUserProfile = await UserProfileHelper.GetAuthorizedUserProfile(unit, User);
-        
+
         if (currentUserProfile == null || currentUserProfile.Id == userId)
             return BadRequest("You can't send a message to yourself.");
-        
+
         var message = sendMessageDto.Message;
 
         Friend? currentRelation;
@@ -129,7 +182,7 @@ public class MessagesController(
         var receiverProfile = await unit.Repository<UserProfile>().GetByIdAsync(userId);
 
         if (receiverProfile == null)
-            return NotFound("User not found.");
+            return NotFound("Failed to send the message.");
 
         try
         {
@@ -145,14 +198,11 @@ public class MessagesController(
 
             if (await messageRepository.Complete())
             {
-                if (NotificationHub.IsUserConnected(receiverProfile.Id))
-                {
-                    var connectionId = NotificationHub.GetConnectionId(receiverProfile.Id);
-                    
-                    if (connectionId != null)
-                        await hubContext.Clients.Client(connectionId)
-                            .SendAsync("MessageCreated", messageEntity.ToDto(message));
-                }
+                await hubContext.Clients.Groups(receiverProfile.Id)
+                    .SendAsync("MessageCreated", messageEntity.ToDto(message));
+
+                await hubContext.Clients.Groups(currentUserProfile.Id)
+                    .SendAsync("MessageCreated", messageEntity.ToDto(message));
 
                 return CreatedAtAction(nameof(GetMessage), new { messageId = messageEntity.Id },
                     messageEntity.ToDto(message));
@@ -178,16 +228,32 @@ public class MessagesController(
         await messageRepository.MarkMessagesAsRead(currentUserProfile.Id, userId);
 
         var receiverProfile = await unit.Repository<UserProfile>().GetByIdAsync(userId);
-        
-        if (receiverProfile != null && NotificationHub.IsUserConnected(receiverProfile.Id))
+
+        if (receiverProfile != null)
         {
-            var connectionId = NotificationHub.GetConnectionId(receiverProfile.Id);
-                    
-            if (connectionId != null)
-                await hubContext.Clients.Client(connectionId)
-                    .SendAsync("MessageRead", currentUserProfile.Id);
+            await hubContext.Clients.Group(receiverProfile.Id)
+                .SendAsync("MessageRead", currentUserProfile.Id);
         }
 
         return NoContent();
     }
+
+    [Authorize]
+    [HttpPost("active-chats")]
+    public async Task<ActionResult<List<string>>> AddUserToActiveChat(ActiveChatDto activeChatDto)
+    {
+        var currentUserProfile = await UserProfileHelper.GetAuthorizedUserProfile(unit, User);
+
+        if (currentUserProfile == null)
+            return Forbid();
+        
+        var activeChats = activeChatDto.IsDelete
+            ? chatsCache.RemoveActiveUserChat(currentUserProfile.Id, activeChatDto.UserId).ToList()
+            : chatsCache.AddActiveUserChat(currentUserProfile.Id, activeChatDto.UserId).ToList();
+
+        await hubContext.Clients.Group(currentUserProfile.Id).SendAsync("ActiveChatsChanged", activeChats);
+
+        return NoContent();
+    }
+    
 }

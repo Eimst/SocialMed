@@ -7,51 +7,41 @@ namespace API.SignalR;
 
 public class NotificationHub(IUnitOfWork unit) : Hub
 {
-    private static readonly ConcurrentDictionary<string, string> UserConnections = new();
-
+    
     public override async Task OnConnectedAsync()
     {
         var user = await GetUser();
-
-        UserConnections.TryAdd(user, Context.ConnectionId);
-
+        
+        if (user != null)
+            await Groups.AddToGroupAsync(Context.ConnectionId, user);
+        
         await base.OnConnectedAsync();
     }
 
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
         var user = await GetUser();
-        
-        UserConnections.TryRemove(user, out _);
-        
+        if (user != null)
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, user);
         await base.OnDisconnectedAsync(exception);
     }
 
-
-    private async Task<string> GetUser()
+    private async Task<string?> GetUser()
     {
-        var user = Context.ConnectionId;
-
         if (Context.User == null) 
-            return user;
+            return null;
 
         var userProfile = await UserProfileHelper.GetAuthorizedUserProfile(unit, Context.User);
 
-        if (userProfile != null)
-            user = userProfile.Id;
-
-        return user;
+        return userProfile?.Id;
     }
     
-    public static bool IsUserConnected(string userId)
+    public async Task IdentifyConnection()
     {
-        return UserConnections.ContainsKey(userId);
+        var user = await GetUser();
+        
+        if (user != null)
+            await Groups.AddToGroupAsync(Context.ConnectionId, user);
     }
     
-    public static string? GetConnectionId(string userId)
-    {
-        UserConnections.TryGetValue(userId, out var connectionId);
-        return connectionId;
-    }
-
 }

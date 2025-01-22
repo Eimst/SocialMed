@@ -37,7 +37,7 @@ export const logout = async () => {
     const res = await fetchWrapper.post('/account/logout', {})
 
     if (res.error) {
-        toast.error(res.error)
+        toast.error(res.error.message)
     } else {
         useUserStore.getState().setUser(null);
     }

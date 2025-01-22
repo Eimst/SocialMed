@@ -7,10 +7,9 @@ import {useFriendStore} from "@/hooks/useFriendStore";
 
 type Props = {
     userId: string;
-    setStatus: (value: string) => void;
 }
 
-function FriendStatus({userId, setStatus}: Props) {
+function FriendStatus({userId}: Props) {
 
     const removeFriend = useFriendStore(state => state.removeFriend)
 
@@ -18,9 +17,8 @@ function FriendStatus({userId, setStatus}: Props) {
         const res = await deleteFriendStatus(userId);
 
         if (res.error) {
-            toast.error(res.error)
+            toast.error(res.error.message);
         } else {
-            setStatus("")
             removeFriend(userId);
         }
     }

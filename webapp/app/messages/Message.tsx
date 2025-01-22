@@ -1,8 +1,7 @@
 import React from 'react';
 import {MessageType} from "@/types";
 import {useUserStore} from "@/hooks/useUserStore";
-import {formatDate, isThisWeek, isToday} from "date-fns";
-import {normalizeDateString} from "@/app/lib/dateNormalizer";
+import {getDynamicTime} from "@/app/lib/dateNormalizer";
 import {CiUnread} from "react-icons/ci";
 
 type Props = {
@@ -11,18 +10,6 @@ type Props = {
 
 function Message({message}: Props) {
     const user = useUserStore(state => state.user)
-
-    const getDynamicTime = (date: string): string => {
-        const messageDate = new Date(normalizeDateString(date));
-
-        if (isToday(messageDate)) {
-            return formatDate(messageDate, 'HH:mm');
-        } else if (isThisWeek(messageDate)) {
-            return formatDate(messageDate, 'EEEE HH:mm');
-        } else {
-            return formatDate(messageDate, 'dd/MM/yyyy HH:mm');
-        }
-    };
 
     const time = getDynamicTime(message.dateCreated);
 

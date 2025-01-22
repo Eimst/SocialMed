@@ -8,19 +8,16 @@ import toast from "react-hot-toast";
 
 type Props = {
     userId: string;
-    setStatus: (value: string) => void;
 }
 
 
-function AddFriendStatus({userId, setStatus}: Props) {
+function AddFriendStatus({userId}: Props) {
 
     const handleAddToFriendsClick = async () => {
         const res = await addFriend(userId);
 
         if(res.error){
-            toast.error(res.error)
-        } else {
-            setStatus("WaitingForConfirmation")
+            toast.error(res.error.message)
         }
     }
 

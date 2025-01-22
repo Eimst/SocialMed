@@ -42,7 +42,7 @@ export default function FriendsLayout({children}: { children: React.ReactNode })
         <div className="relative w-full h-full">
 
             {
-                <div className="w-[20%] fixed top-[15%] lef-0 pl-5 text-justify z-49 justify-end">
+                <div className="w-[20%] fixed top-[10%] lef-0 pl-5 text-justify z-49 justify-end">
                     <UpdateNewsBoard />
                 </div>
             }

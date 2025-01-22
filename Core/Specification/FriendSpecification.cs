@@ -20,4 +20,5 @@ public class FriendSpecification : BaseSpecification<Friend>
         AddInclude(x => x.Responder);
         AddOrderByDescending(x => x.DateCreated);
     }
+    
 }

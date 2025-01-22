@@ -1,3 +1,4 @@
+using API.Middleware;
 using API.SignalR;
 using Core.Entities;
 using Core.Interfaces;
@@ -24,6 +25,7 @@ builder.Services.AddScoped<IHybridEncryptionService, HybridEncryptionService>();
 builder.Services.AddScoped<IHybridDecryptionService, HybridDecryptionService>();
 
 builder.Services.AddScoped<IPrivateKeyCache, PrivateKeyCache>();
+builder.Services.AddScoped<IActiveChatsCache, ActiveChatsCache>();
 
 builder.Services.AddCors();
 
@@ -44,6 +46,8 @@ builder.Services.AddIdentityApiEndpoints<AppUser>()
 
 builder.Services.AddSignalR();
 var app = builder.Build();
+
+app.UseMiddleware<ErrorFormatterMiddleware>();
 
 var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
 

@@ -1,6 +1,11 @@
-import React, {useEffect, useLayoutEffect, useRef} from 'react';
+import React, {useCallback, useEffect, useLayoutEffect, useRef} from 'react';
 import {UserProfileInfo} from "@/types";
-import {getChatHistory, markMessagesAsRead, postMessage} from "@/app/actions/messageActions";
+import {
+    addUserToActiveChats,
+    getChatHistory,
+    markMessagesAsRead,
+    postMessage
+} from "@/app/actions/messageActions";
 import toast from "react-hot-toast";
 import Message from "@/app/messages/Message";
 import WriteMessage from "@/app/messages/WriteMessage";
@@ -14,27 +19,29 @@ type Props = {
 
 function Messages({friend}: Props) {
 
-    // const [messages, setMessages] = useState<MessageType[]>()
     const messages = useMessageStore(useShallow((state) => state.messagesByUserId[friend.profileId] || []));
-    const addMessage = useMessageStore(state => state.addMessageByUserId)
     const setMessages = useMessageStore(state => state.setMessagesByUserId)
     const setOpenedMessagesByUserId = useMessageStore(state => state.setOpenedMessagesByUserId)
 
     const bottomRef = useRef<HTMLDivElement | null>(null);
 
-
     const sendMessage = async (message: string) => {
         const response = await postMessage(friend.profileId, message)
         if (response.error)
-            toast(response.error)
-        else {
-            addMessage(friend.profileId, response)
-        }
+            toast.error(response.error.message)
     }
 
     const scrollToBottom = () => {
         bottomRef.current?.scrollIntoView({ behavior: "instant"});
     };
+
+    const removeActiveChats = useCallback(() => {
+        const payload = new Blob(
+            [JSON.stringify({ userId: friend.profileId, isDelete: true })],
+            { type: "application/json" }
+        );
+        navigator.sendBeacon(`${process.env.NEXT_PUBLIC_BASE_URL}/messages/active-chats`, payload);
+    }, [friend.profileId]);
 
     useEffect(() => {
         const getMessages = async () => {
@@ -46,10 +53,25 @@ function Messages({friend}: Props) {
                 await markMessagesAsRead(friend.profileId)
 
                 setOpenedMessagesByUserId(friend.profileId)
-                setMessages(friend.profileId, response)
+                if (response)
+                    setMessages(friend.profileId, response)
+                await addActiveChats()
             }
         }
+        const addActiveChats = async () => {
+            const res = await addUserToActiveChats(friend.profileId)
+            if (res.error)
+                toast.error(res.error.message)
+        }
+
         getMessages()
+
+        window.addEventListener("unload", removeActiveChats);
+
+        return () => {
+            removeActiveChats();
+            window.removeEventListener("unload", removeActiveChats);
+        };
     }, [friend.profileId, setMessages, setOpenedMessagesByUserId])
 
     useLayoutEffect(() => {
@@ -63,7 +85,7 @@ function Messages({friend}: Props) {
     return (
         <div className="flex flex-col h-full px-2">
             <div className="flex-grow">
-                {messages?.length > 0 && (messages.map((message) => (
+                {(messages.length > 0  && messages[0]) && (messages.map((message) => (
                     <Message key={message.dateCreated} message={message} />
                 )))}
                 {/* Dummy div to scroll into */}

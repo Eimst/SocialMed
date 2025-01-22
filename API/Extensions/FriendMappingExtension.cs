@@ -35,4 +35,26 @@ public static class FriendMappingExtension
         };
     }
     
+    // public static NotificationDto ToNotificationDto(this Friend friend, Notification notification)
+    // {
+    //     return new NotificationDto
+    //     {
+    //         UserProfile = friend.Requester.ToDto(),
+    //         Date = friend.DateCreated,
+    //         Text = "Sent you a friend request"
+    //     };
+    // }
+    
+    public static Notification ToNotification(this Friend friend)
+    {
+        return new Notification
+        {
+            Date = friend.DateCreated,
+            Text = "Sent you a friend request",
+            OwnerId = friend.ResponderId,
+            InitiatorId = friend.RequesterId,
+            isDeleted = false,
+            Initiator = friend.Requester
+        };
+    }
 }

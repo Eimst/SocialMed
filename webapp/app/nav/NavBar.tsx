@@ -7,6 +7,7 @@ import UserActions from "@/app/nav/UserActions";
 import LoginButton from "@/app/nav/LoginButton";
 import {useUserStore} from "@/hooks/useUserStore";
 import {getUserInfo} from "@/app/actions/userActions";
+import NotificationButton from "@/app/notifications/NotificationButton";
 
 
 function NavBar() {
@@ -32,7 +33,11 @@ function NavBar() {
             <Logo/>
             <Search/>
             {
-                user ? (<UserActions user={user}/>)
+                user ? (
+                    <div className={`flex`}>
+                        <NotificationButton/>
+                        <UserActions user={user}/>
+                    </div>)
                     : (<LoginButton/>)
             }
 

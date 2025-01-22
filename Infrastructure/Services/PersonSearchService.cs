@@ -5,7 +5,7 @@ namespace Infrastructure.Services;
 
 public class PersonSearchService : IPersonSearchService
 {
-    public List<UserProfile> SearchForPerson(string firstName, string lastName, List<UserProfile> userProfiles)
+    public List<UserProfile> SearchForPerson(string firstName, string lastName, string? currentUserId, List<UserProfile> userProfiles)
     {
         if (userProfiles.Count == 0)
             return [];
@@ -15,6 +15,9 @@ public class PersonSearchService : IPersonSearchService
 
         foreach (var userProfile in userProfiles)
         {
+            if (userProfile.Id == currentUserId)
+                continue;
+            
             var firstNameSimilarity = CalculateJaccardSimilarity(firstName, userProfile.FirstName);
 
             var lastNameSimilarity = string.IsNullOrEmpty(lastName)

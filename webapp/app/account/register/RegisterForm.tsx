@@ -79,15 +79,20 @@ function RegisterForm() {
                 />
                 <div className="flex justify-center">
                     <Button
-                        isProcessing={isSubmitting}
-                        disabled={!isValid}
+                        disabled={!isValid || isSubmitting}
                         type="submit"
                         className="text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl
                         focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800 font-medium
                         rounded-xl px-10 py-1 text-center  my-2"
 
                     >
-                        <span className={'text-lg'}>Register</span>
+                        {isSubmitting ? (
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
+                            </div>
+                        ) : (
+                            <span className="text-lg">Register</span>
+                        )}
                     </Button>
                 </div>
             </form>

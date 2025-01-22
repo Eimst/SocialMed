@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {IoMdSend} from "react-icons/io";
+import toast from "react-hot-toast";
 
 
 type Props = {
@@ -15,8 +16,13 @@ function WriteMessage({sendMessage}: Props) {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        sendMessage(content);
-        setContent("");
+        if (content.trim().length < 1) {
+            toast.error("Message cannot be empty");
+        } else {
+            sendMessage(content);
+            setContent("");
+        }
+
     }
 
     return (

@@ -5,11 +5,14 @@ namespace Core.Specification;
 
 public class MessageSpecification : BaseSpecification<Message>
 {
-    private MessageSpecification(Expression<Func<Message, bool>> criteria) : base(criteria)
+    private MessageSpecification(Expression<Func<Message, bool>> criteria, bool isDesc = false) : base(criteria)
     {
         AddInclude(x => x.Sender);
         AddInclude(x => x.Receiver);
-        AddOrderByAscending(x => x.DateCreated);
+        if (isDesc)
+            AddOrderByDescending(x => x.DateCreated);
+        else
+            AddOrderByAscending(x => x.DateCreated);
     }
 
     public static MessageSpecification ByMessageId(string messageId)
@@ -17,10 +20,15 @@ public class MessageSpecification : BaseSpecification<Message>
         return new MessageSpecification(x => x.Id == messageId);
     }
 
-    public static MessageSpecification ByUserId(string currentUser, string userId)
+    public static MessageSpecification ByUserId(string currentUser, string userId, bool isDesc = false)
     {
         return new MessageSpecification(x =>
-            x.SenderId == currentUser && x.ReceiverId == userId || x.SenderId == userId && x.ReceiverId == currentUser);
+            x.SenderId == currentUser && x.ReceiverId == userId || x.SenderId == userId && x.ReceiverId == currentUser, isDesc);
     }
     
+    public static MessageSpecification ByUserIdAndUnread(string currentUser, string userId)
+    {
+        return new MessageSpecification(x =>
+            x.SenderId == userId && x.ReceiverId == currentUser && x.IsRead == false);
+    }
 }
