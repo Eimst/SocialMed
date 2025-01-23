@@ -11,9 +11,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Logging.ClearProviders(); 
-builder.Logging.AddConsole();
-builder.Logging.AddAzureWebAppDiagnostics(); 
+if (!builder.Environment.IsDevelopment())
+{
+    builder.Logging.ClearProviders();
+    builder.Logging.AddConsole();
+    builder.Logging.AddAzureWebAppDiagnostics();
+    builder.Services.AddApplicationInsightsTelemetry(options =>
+    {
+        options.ConnectionString = builder.Configuration["ApplicationInsights:ConnectionString"];
+    });
+}
 
 builder.Services.AddControllers();
 
