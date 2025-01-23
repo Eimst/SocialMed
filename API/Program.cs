@@ -11,6 +11,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+builder.Logging.ClearProviders(); 
+builder.Logging.AddConsole();
+builder.Logging.AddAzureWebAppDiagnostics(); 
+
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<MediaContext>(options =>
