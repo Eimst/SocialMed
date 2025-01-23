@@ -69,15 +69,17 @@ app.MapControllers();
 
 app.MapHub<NotificationHub>("/hub/notifications");
 
+var logger = app.Services.GetService<ILogger<Program>>();
 try
 {
+
     using var scope = app.Services.CreateScope();
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<MediaContext>();
     var userManager = services.GetRequiredService<UserManager<AppUser>>();
-    Console.WriteLine("Starting migrations...");
+    logger?.Log(LogLevel.Information, "Starting migrations...");
     await context.Database.MigrateAsync();
-    Console.WriteLine("Migrations applied successfully.");
+    logger?.Log(LogLevel.Information, "Migrations applied successfully.");
     if (app.Environment.IsDevelopment())
     {
         await SeedData.SeedAsync(context, userManager, builder.Configuration);
@@ -86,7 +88,7 @@ try
 
 catch (Exception e)
 {
-    Console.WriteLine(e);
+    logger?.Log(LogLevel.Error, e.Message);
     throw;
 }
 
