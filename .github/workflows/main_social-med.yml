@@ -62,4 +62,5 @@ jobs:
           app-name: 'social-med'
           slot-name: 'Production'
           package: .
+
           
