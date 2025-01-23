@@ -81,6 +81,7 @@ app.MapControllers();
 app.MapHub<NotificationHub>("/hub/notifications");
 
 var logger = app.Services.GetService<ILogger<Program>>();
+logger?.LogInformation("This is a test log message from the application.");
 try
 {
 
