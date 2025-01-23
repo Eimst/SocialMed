@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.SignalR;
 namespace API.Controllers;
 
 [ApiController]
-[Route("api/notifications")]
+[Route("api/[controller]")]
 public class NotificationsController(IUnitOfWork unit, IHubContext<NotificationHub> hubContext) : ControllerBase
 {
     [Authorize]
