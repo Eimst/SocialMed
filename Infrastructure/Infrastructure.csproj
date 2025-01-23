@@ -19,7 +19,7 @@
 
   <ItemGroup>
     <Folder Include="Data\SeedData\" />
-    <Folder Include="Migrations\" />
+    <Folder Include="Migrations\**\*.cs" />
   </ItemGroup>
 
   <PropertyGroup>
