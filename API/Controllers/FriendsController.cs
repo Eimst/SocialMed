@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.SignalR;
 namespace API.Controllers;
 
 [ApiController]
-[Route("api/friends")]
+[Route("api/[controller]")]
 public class FriendsController(IUnitOfWork unit, IHubContext<NotificationHub> hubContext) : ControllerBase
 {
     [HttpGet("{userId}")]
