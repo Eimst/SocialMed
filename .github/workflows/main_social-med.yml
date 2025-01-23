@@ -62,4 +62,11 @@ jobs:
           app-name: 'social-med'
           slot-name: 'Production'
           package: .
+
+      - name: Run database migrations
+        run: |
+          dotnet ef database update -s API -p Infrastructure --no-build
+        env:
+          ASPNETCORE_ENVIRONMENT: 'Production'
+          AZURE_SQL_CONNECTION_STRING: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
           
