@@ -212,7 +212,8 @@ namespace Infrastructure.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     SenderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ReceiverId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    EncryptedMessage = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EncryptedMessageForSender = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EncryptedMessageForReceiver = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsRead = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -227,6 +228,27 @@ namespace Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_Messages_UserProfiles_SenderId",
                         column: x => x.SenderId,
+                        principalTable: "UserProfiles",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Notifications",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    OwnerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    InitiatorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    isDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notifications", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Notifications_UserProfiles_InitiatorId",
+                        column: x => x.InitiatorId,
                         principalTable: "UserProfiles",
                         principalColumn: "Id");
                 });
@@ -382,6 +404,16 @@ namespace Infrastructure.Migrations
                 column: "SenderId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Notifications_InitiatorId",
+                table: "Notifications",
+                column: "InitiatorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notifications_OwnerId_isDeleted",
+                table: "Notifications",
+                columns: new[] { "OwnerId", "isDeleted" });
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Posts_UserId",
                 table: "Posts",
                 column: "UserId");
@@ -422,6 +454,9 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Messages");
+
+            migrationBuilder.DropTable(
+                name: "Notifications");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
