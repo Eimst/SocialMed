@@ -5,8 +5,8 @@ import {LiaUserFriendsSolid} from "react-icons/lia";
 import Friend from "@/app/friends/Friend";
 import {useFriendStore} from "@/hooks/useFriendStore";
 import {IoCaretBack} from "react-icons/io5";
-import Messages from "@/app/messages/Messages";
 import {useMessageStore} from "@/hooks/useMessageStore";
+import ScrollableChat from "@/app/messages/ScrollableChat";
 
 type Props = {
     setShowFriends: (showFriends: boolean) => void;
@@ -16,7 +16,6 @@ function Friends({setShowFriends}: Props) {
     const friends = useFriendStore((state) => state.friends);
     const setChattingWithFriend = useFriendStore(state => state.setChattingWithFriend);
     const chattingWithFriend = useFriendStore(state => state.chattingWithFriend);
-
     const setOpenedMessagesByUserId = useMessageStore(state => state.setOpenedMessagesByUserId)
 
     return (
@@ -52,16 +51,7 @@ function Friends({setShowFriends}: Props) {
             {/* Main Content Area */}
             <div className="flex-grow overflow-y-auto scrollbar-hide">
                 {chattingWithFriend ? (
-                    <div className="h-full flex flex-col">
-                        {/* Sticky Friend Info */}
-                        <div className="sticky top-0 z-10">
-                            <Friend user={chattingWithFriend} showMessageIcon={false}/>
-                        </div>
-                        {/* Scrollable Messages */}
-                        <div className="flex-grow overflow-y-auto scrollbar-hide mb-2">
-                            <Messages friend={chattingWithFriend} />
-                        </div>
-                    </div>
+                    <ScrollableChat chattingWithFriend={chattingWithFriend}/>
                 ) : (
                     friends.length > 0 ? friends.map((friend) => (
                         <Friend key={friend.userProfileInfo.profileId} user={friend.userProfileInfo}

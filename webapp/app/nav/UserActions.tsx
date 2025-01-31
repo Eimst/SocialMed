@@ -26,7 +26,7 @@ function UserActions({user}: Props) {
             <SpeedDial
                 ariaLabel="SpeedDial basic example"
                 icon={
-                    <ProfileImage imageUrl={'https://cdn.pixabay.com/photo/2023/12/22/01/37/woman-8463055_1280.jpg'} />
+                    <ProfileImage imageUrl={user.profilePictureUrl} />
                 }
                 direction="left"
                 sx={{

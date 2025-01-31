@@ -12,4 +12,10 @@ public interface ISpecification<T>
     
     public Expression<Func<T, object>>? OrderByAscending { get; set; }
     
+    bool IsPagingEnabled { get;  }
+    
+    int Skip { get;  }
+
+    int Take { get; }
+    
 }

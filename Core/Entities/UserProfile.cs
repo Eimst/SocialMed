@@ -6,7 +6,7 @@ public class UserProfile : BaseEntity, IDtoConvertible
 {
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
-    public string? ProfilePictureUrl { get; set; }
+    public required string ProfilePictureUrl { get; set; }
     public string? Bio { get; set; }
     
     public required string PrivateKey { get; set; }

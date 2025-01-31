@@ -5,14 +5,14 @@ namespace Core.Specification;
 
 public class MessageSpecification : BaseSpecification<Message>
 {
-    private MessageSpecification(Expression<Func<Message, bool>> criteria, bool isDesc = false) : base(criteria)
+    private MessageSpecification(Expression<Func<Message, bool>> criteria, bool applyPagination = false) : base(criteria)
     {
         AddInclude(x => x.Sender);
         AddInclude(x => x.Receiver);
-        if (isDesc)
-            AddOrderByDescending(x => x.DateCreated);
-        else
-            AddOrderByAscending(x => x.DateCreated);
+        AddOrderByDescending(x => x.DateCreated);
+        
+        if (applyPagination)
+            ApplyPaging(0, 10);
     }
 
     public static MessageSpecification ByMessageId(string messageId)
@@ -20,10 +20,16 @@ public class MessageSpecification : BaseSpecification<Message>
         return new MessageSpecification(x => x.Id == messageId);
     }
 
-    public static MessageSpecification ByUserId(string currentUser, string userId, bool isDesc = false)
+    public static MessageSpecification ByUserId(string currentUser, string userId)
     {
         return new MessageSpecification(x =>
-            x.SenderId == currentUser && x.ReceiverId == userId || x.SenderId == userId && x.ReceiverId == currentUser, isDesc);
+            x.SenderId == currentUser && x.ReceiverId == userId || x.SenderId == userId && x.ReceiverId == currentUser);
+    }
+
+    public static MessageSpecification ByUserIdWithCursor(string currentUser, string userId, DateTime cursorDate)
+    {
+        return new MessageSpecification(x =>
+            (x.SenderId == currentUser && x.ReceiverId == userId || x.SenderId == userId && x.ReceiverId == currentUser) && x.DateCreated < cursorDate, true);
     }
     
     public static MessageSpecification ByUserIdAndUnread(string currentUser, string userId)

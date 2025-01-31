@@ -12,7 +12,6 @@ type Props = {
 function CommentSection({postId}: Props) {
     const comments = useCommentStore(useShallow((state) => state.commentsByPost[postId] || []));
 
-
     return (
         <div className={``}>
 

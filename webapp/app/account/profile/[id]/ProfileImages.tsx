@@ -1,13 +1,25 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Image from "next/image";
-// import {UserProfileInfo} from "@/types";
-//
-//
-// type Props = {
-//     user?: UserProfileInfo
-// }
+import {UserProfile} from "@/types";
+import {useUserStore} from "@/hooks/useUserStore";
+import Modal from "@/app/components/Modal";
+import EditImage from "@/app/account/profile/[id]/EditImage";
 
-function ProfileImages() {
+
+type Props = {
+    userProfile: UserProfile
+}
+
+function ProfileImages({userProfile}: Props) {
+    const user = useUserStore(state => state.user)
+    const [isModalOpen, setModalOpen] = useState(false);
+    const openModal = () => setModalOpen(true);
+    const closeModal = () => setModalOpen(false);
+
+    const handleImageUpdate = async () => {
+        closeModal();
+    };
+
     return (
         <div className="relative w-[100%] h-2/5 shadow-md">
             <Image
@@ -18,20 +30,35 @@ function ProfileImages() {
                 className="object-cover rounded-b-xl"
                 sizes="(max-width: 16px) 100vw, (max-width: 16px) 50vw, 25vw"
 
-            />
-            <div className={`absolute bottom-0 left-32 transform -translate-x-1/2 translate-y-1/2 w-64 h-64`}>
-                <Image
-                    src={'https://cdn.pixabay.com/photo/2023/12/22/01/37/woman-8463055_1280.jpg'}
 
+            />
+            <div className={`absolute bottom-0 left-32 transform -translate-x-1/2 translate-y-1/2 w-64 h-64 group`}>
+                <Image
+                    src={userProfile.profilePictureUrl}
                     alt="profile"
                     fill
                     priority
-                    className={`object-cover rounded-full duration-700 ease-in-out`}
+                    className={`object-cover rounded-full`}
                     sizes="(max-width: 16px) 100vw, (max-width: 16px) 50vw, 25vw"
-
                 />
+                {
+                    (user && user.profileId === userProfile.profileId) && (
+                        <div
+                            className="cursor-pointer absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-500 ease-in-out"
+                            onClick={openModal}
+                        >
+                            <span className="text-white text-lg font-semibold"
+                            >
+                                Edit
+                            </span>
+                        </div>
+                    )
+                }
 
             </div>
+            <Modal isOpen={isModalOpen} onClose={closeModal}>
+                <EditImage userId={userProfile.profileId} handleImageUpdate={handleImageUpdate} />
+            </Modal>
         </div>
     );
 }

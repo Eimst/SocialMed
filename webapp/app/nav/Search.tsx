@@ -16,17 +16,17 @@ function Search() {
     
     const handleSearchButtonClick = () => {
         if (searchFieldRef.current) {
+            setIsVisible(false);
             searchFieldRef.current.focusFirstUser();
         }
     };
 
     const handleClickOutside = (event: MouseEvent) => {
-        // Check if the click happened outside the referenced container
         if (
             searchContainerRef.current &&
             !searchContainerRef.current.contains(event.target as Node)
         ) {
-            setIsVisible(false); // Hide the element
+            setIsVisible(false);
         }
     };
 
@@ -48,15 +48,17 @@ function Search() {
                     value={searchText}
                     type="text"
                     placeholder='Search for a person'
-                    className='input-custom'/>
-                <button
-                    type="button"
-                    onClick={handleSearchButtonClick}
+                    className='input-custom'
                     onKeyDown={(key) => {
                         if (key.key === 'Enter') {
                             handleSearchButtonClick()
                         }
                     }}
+                />
+
+                <button
+                    type="button"
+                    onClick={handleSearchButtonClick}
                 >
                     <FaSearch
                         size={34}

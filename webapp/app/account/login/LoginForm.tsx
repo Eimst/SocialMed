@@ -8,11 +8,13 @@ import toast from "react-hot-toast";
 import {useRouter} from "next/navigation";
 import Link from "next/link";
 import {login} from "@/app/actions/userActions";
+import {useUserStore} from "@/hooks/useUserStore";
+import { redirect } from "next/navigation";
 
 
 function LoginForm() {
-
     const router = useRouter();
+    const user = useUserStore(state => state.user);
 
     const {
         control, handleSubmit, reset,
@@ -36,6 +38,9 @@ function LoginForm() {
             toast.error(`${error.message}`);
         }
     }
+
+    if(user)
+        redirect('/');
 
     return (
         <div className="">

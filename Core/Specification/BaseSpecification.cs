@@ -12,6 +12,12 @@ public class BaseSpecification<T>(Expression<Func<T, bool>>? critiria) : ISpecif
     public Expression<Func<T, object>>? OrderByDescending { get; set; }
     
     public Expression<Func<T, object>>? OrderByAscending { get; set; }
+    
+    public int Skip { get; private set; }
+
+    public int Take { get; private set; }
+    
+    public bool IsPagingEnabled { get; private set; }
 
     protected void AddInclude(Expression<Func<T, object>> includeExpression)
     {
@@ -26,5 +32,12 @@ public class BaseSpecification<T>(Expression<Func<T, bool>>? critiria) : ISpecif
     protected void AddOrderByAscending(Expression<Func<T, object>> orderByExpression)
     {
         OrderByAscending = orderByExpression;
+    }
+    
+    protected void ApplyPaging(int skip, int take)
+    {
+        Skip = skip;
+        Take = take;
+        IsPagingEnabled = true;
     }
 }

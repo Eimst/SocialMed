@@ -36,6 +36,14 @@ export interface UserProfileInfo {
     profilePictureUrl: string
 }
 
+export interface UserProfile {
+    firstName: string
+    lastName: string
+    profileId: string
+    profilePictureUrl: string
+    bio: string
+}
+
 export interface Friend {
     userProfileInfo: UserProfileInfo
     status: FriendStatusType

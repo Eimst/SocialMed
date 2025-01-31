@@ -1,6 +1,6 @@
 'use client'
 
-import { create } from 'zustand'
+import {create} from 'zustand'
 import {UserProfileInfo} from "@/types";
 
 
@@ -10,15 +10,21 @@ type State = {
 
 type Actions = {
     setUser: (data: UserProfileInfo | null) => void;
+    setImageUrl: (url: string) => void;
 }
 
 const initialState: State = {
-    user: null
+    user: null,
 }
 
 
 export const useUserStore = create<State & Actions>((set) => ({
     ...initialState,
 
-    setUser: (data) => set({ user: data })
+    setUser: (data) => set({user: data}),
+
+    setImageUrl: (url) =>
+        set((state) => ({
+            user: state.user ? {...state.user, profilePictureUrl: url} : null,
+        })),
 }))

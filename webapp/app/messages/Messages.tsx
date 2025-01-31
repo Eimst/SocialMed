@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useLayoutEffect, useRef} from 'react';
+import React, {useCallback, useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {UserProfileInfo} from "@/types";
 import {
     addUserToActiveChats,
@@ -15,15 +15,23 @@ import {useShallow} from "zustand/react/shallow";
 
 type Props = {
     friend: UserProfileInfo
+    isAtBottom: boolean
+    isAtTop: boolean
 }
 
-function Messages({friend}: Props) {
+function Messages({friend, isAtBottom, isAtTop}: Props) {
 
     const messages = useMessageStore(useShallow((state) => state.messagesByUserId[friend.profileId] || []));
     const setMessages = useMessageStore(state => state.setMessagesByUserId)
     const setOpenedMessagesByUserId = useMessageStore(state => state.setOpenedMessagesByUserId)
+    const addMessagesToBackByUserId = useMessageStore(state => state.addMessagesToBackByUserId)
+    const [totalMessagesCount, setTotalMessagesCount] = useState<number>(0);
+    const [loading, setLoading] = useState(false);
 
     const bottomRef = useRef<HTMLDivElement | null>(null);
+    const observerRef = useRef<HTMLDivElement | null>(null);
+    const checkpointRef = useRef<HTMLDivElement | null>(null);
+    const lastSeenMessageRef = useRef<string | null>(null);
 
     const sendMessage = async (message: string) => {
         const response = await postMessage(friend.profileId, message)
@@ -35,6 +43,10 @@ function Messages({friend}: Props) {
         bottomRef.current?.scrollIntoView({ behavior: "instant"});
     };
 
+    const scrollToCheckpoint = () => {
+        checkpointRef.current?.scrollIntoView({ behavior: "instant"});
+    };
+
     const removeActiveChats = useCallback(() => {
         const payload = new Blob(
             [JSON.stringify({ userId: friend.profileId, isDelete: true })],
@@ -43,18 +55,20 @@ function Messages({friend}: Props) {
         navigator.sendBeacon(`${process.env.NEXT_PUBLIC_BASE_URL}/messages/active-chats`, payload);
     }, [friend.profileId]);
 
+
     useEffect(() => {
         const getMessages = async () => {
             const response = await getChatHistory(friend.profileId)
 
             if (response.error)
-                toast.error(response.message)
+                toast.error(response.error.message)
             else {
                 await markMessagesAsRead(friend.profileId)
 
                 setOpenedMessagesByUserId(friend.profileId)
                 if (response)
-                    setMessages(friend.profileId, response)
+                    setMessages(friend.profileId, response.messages)
+                setTotalMessagesCount(response.totalMessagesCount)
                 await addActiveChats()
             }
         }
@@ -74,8 +88,34 @@ function Messages({friend}: Props) {
         };
     }, [friend.profileId, setMessages, setOpenedMessagesByUserId])
 
+    useEffect(() => {
+        if (messages.length < 10 || messages.length >= totalMessagesCount || loading || !isAtTop)
+            return;
+
+        const fetchMoreMessages = async () => {
+            setLoading(true);
+            lastSeenMessageRef.current = messages[0]?.dateCreated;
+
+            const response = await getChatHistory(friend.profileId, messages[0]?.dateCreated);
+
+            if (response.error) {
+                toast.error(response.error.message);
+            } else if (response.messages.length > 0) {
+                addMessagesToBackByUserId(friend.profileId, response.messages);
+                setTimeout(() => scrollToCheckpoint(), 1);
+            }
+            setTimeout(() => setLoading(false), 50);
+        };
+
+        fetchMoreMessages()
+    }, [isAtTop]);
+
     useLayoutEffect(() => {
-        scrollToBottom();
+        if (messages.length <= 10) {
+            scrollToBottom();
+        } else if (isAtBottom) {
+            scrollToBottom();
+        }
     }, [messages]);
 
     if (!messages) {
@@ -85,8 +125,12 @@ function Messages({friend}: Props) {
     return (
         <div className="flex flex-col h-full px-2">
             <div className="flex-grow">
+                {messages.length >= 10 && <div ref={observerRef} className="bg-red-400" />}
                 {(messages.length > 0  && messages[0]) && (messages.map((message) => (
-                    <Message key={message.dateCreated} message={message} />
+                    <div key={message.dateCreated}>
+                        <Message message={message} />
+                        {message.dateCreated === lastSeenMessageRef.current && <div ref={checkpointRef} className=" bg-blue-400" />}
+                    </div>
                 )))}
                 {/* Dummy div to scroll into */}
                 <div ref={bottomRef} />

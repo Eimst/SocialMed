@@ -44,5 +44,13 @@ export const logout = async () => {
 }
 
 export const getProfileInfo = async (userId: string) => {
-    return await fetchWrapper.get('/account/user-info/' + userId);
+    return await fetchWrapper.get('/account/profile/' + userId);
+}
+
+export const updateProfileBio = async (userId: string, bio: string) => {
+    return await fetchWrapper.put(`/account/profile/${userId}/update-bio`, {bio})
+}
+
+export const updateProfileImage = async (userId: string, image: FormData) => {
+    return await fetchWrapper.put(`/account/profile/${userId}/update-image`, image)
 }

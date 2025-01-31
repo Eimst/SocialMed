@@ -1,4 +1,5 @@
 using API.DTOs;
+using API.Helpers;
 using Core.Entities;
 
 namespace API.Extensions;
@@ -11,7 +12,7 @@ public static class UserProfileMappingExtension
         {
             FirstName = userProfile.FirstName,
             LastName = userProfile.LastName,
-            ProfilePictureUrl = userProfile.ProfilePictureUrl,
+            ProfilePictureUrl = BlobHelper.GetProfilePictureUrl(userProfile),
             ProfileId = userProfile.Id
         };
     }

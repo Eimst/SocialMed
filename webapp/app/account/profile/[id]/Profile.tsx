@@ -12,7 +12,9 @@ import AvailableFriendActions from "@/app/friends/AvailableFriendActions";
 import Modal from "@/app/components/Modal";
 import ShowAllFriends from "@/app/friends/ShowAllFriends";
 import ProfileSettings from "@/app/account/profile/[id]/ProfileSettings";
-import {CustomError} from "@/types";
+import {CustomError, UserProfile} from "@/types";
+import {useRouter} from "next/navigation";
+import EditBio from "@/app/account/profile/[id]/EditBio";
 
 
 type Props = {
@@ -20,17 +22,20 @@ type Props = {
 }
 
 function Profile({id}: Props) {
+    const router = useRouter();
     const posts = usePostStore(useShallow((state) =>
         state.posts.filter((post) => post.userId === id))
     );
 
     const user = useUserStore(state => state.user);
-    const [nameLastName, setNameLastName] = useState("");
+    const [userProfile, setUserProfile] = useState<UserProfile>();
 
     const [isModalOpen, setModalOpen] = useState(false);
 
     const openModal = () => setModalOpen(true);
     const closeModal = () => setModalOpen(false);
+
+    const [isEditingBio, setIsEditingBio] = useState(false);
 
     useEffect(() => {
         const getProfileUserInfo = async () => {
@@ -40,11 +45,10 @@ function Profile({id}: Props) {
                 if (data.error)
                     throw {message: data.error.message, status: data.error.status} as CustomError;
 
-                setNameLastName(`${data.firstName} ${data.lastName}`);
-
+                setUserProfile(data)
             } catch (error: unknown) {
                 if (error && (error as CustomError).message) {
-                    toast.error((error as CustomError).message);
+                    router.push("/404");
                 } else {
                     toast.error("An unexpected error occurred.");
                 }
@@ -52,40 +56,47 @@ function Profile({id}: Props) {
 
         }
         getProfileUserInfo();
-    }, [id]);
+    }, [id, router, user]);
+
+
+    if (!userProfile)
+        return null;
 
     return (
 
         <div className={` w-[100%] flex gap-10 h-screen justify-center -mt-40 bg-gray-50`}>
             <div className={`w-[55%] h-screen overflow-y-auto scrollbar-hide`}>
 
-                <ProfileImages/>
+                <ProfileImages userProfile={userProfile} />
 
                 <div className={`flex w-[73%] ml-auto pt-7 justify-between`}>
                         <span className={`text-black text-2xl font-semibold`}>
-                            {nameLastName}
+                            {userProfile.firstName} {userProfile.lastName}
                         </span>
                     {
                         user && (
                             user.profileId !== id ? (
                                 <AvailableFriendActions userId={id}/>
                             ) : (
-                                <ProfileSettings/>
+                                <ProfileSettings setIsEditingBio={setIsEditingBio} isEditingBio={isEditingBio} />
                             ))
                     }
 
                 </div>
-                <div className={`flex justify-between mt-24 mb-10`}>
+                <div className={`flex justify-between mt-24 mb-10 border-y-2 py-10`}>
 
                     <div className={`w-1/2`}>
                         <span className={`font-semibold text-black text-lg`}>
                             Bio:
                         </span>
-                        <span className={`flex w-[100%]  justify-end text-black text-justify`}>
-                            Lorem ipsum odor amet, consectetuer adipiscing elit. Fames justo fames purus integer
-                            purus morbi vestibulum parturient. Non pulvinar vestibulum, nascetur efficitur nisl porta.
-                            Convallis vivamus eu amet proin habitant faucibus nunc.
-                        </span>
+                        {isEditingBio ? (
+                            <EditBio userProfile={userProfile} setIsBioEditing={setIsEditingBio} setUserProfile={setUserProfile}/>
+                        ) : (
+                            <span className={`flex w-[100%]  justify-start text-black text-justify`}>
+                                {userProfile.bio}
+                            </span>
+                        )}
+
                     </div>
                     <div className={`relative h-10`}>
                         <button

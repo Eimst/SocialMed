@@ -12,7 +12,8 @@ const nextConfig: NextConfig = {
     },
     images: {
         remotePatterns: [
-            {protocol: "https", hostname: "cdn.pixabay.com"}
+            {protocol: "https", hostname: "cdn.pixabay.com"},
+            {protocol: "https", hostname: "socialmedimages.blob.core.windows.net", pathname: "/images/**"}
         ]
     },
     output: "standalone",

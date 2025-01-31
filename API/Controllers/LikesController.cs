@@ -38,17 +38,12 @@ public class LikesController(IUnitOfWork unit) : ControllerBase
     
     [Authorize]
     [HttpPost]
-    public async Task<ActionResult<List<LikeDto>>> CreateLike(string postId, LikeCreateDto likeCreateDto)
+    public async Task<ActionResult<List<LikeDto>>> CreateLike(string postId)
     {
         var userProfile = await UserProfileHelper.GetAuthorizedUserProfile(unit, User);
         
         if (userProfile == null)
             return Forbid();
-        
-        if (userProfile.Id != likeCreateDto.UserId)
-        {
-            return Forbid();
-        }
         
         if (userProfile.Likes.Any(x => x.PostId == postId))
             return BadRequest("You can't like this post again");
@@ -58,7 +53,14 @@ public class LikesController(IUnitOfWork unit) : ControllerBase
         if (post == null)
             return BadRequest("Post not found");
 
-        var like = likeCreateDto.ToEntity(userProfile, post);
+        var like = new Like
+        {
+            UserId = userProfile.Id,
+            UserProfile = userProfile,
+            PostId = postId,
+            Post = post
+        };
+        
         unit.Repository<Like>().Add(like);
 
         if (await unit.Complete())

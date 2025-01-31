@@ -3,17 +3,22 @@
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 
-const getHeaders : (method: string, body: object) => RequestInit = (method: string, body: object) => {
+const getHeaders : (method: string, body: object) => RequestInit = (method: string, body: object | FormData) => {
+
     const headers: RequestInit = {
         method: method,
-        headers: {
-            'Content-Type': 'application/json',
-        },
         credentials: 'include',
     };
 
     if (method !== 'GET' && body) {
-        headers.body = JSON.stringify(body);
+        if (body instanceof FormData)
+            headers.body = body as FormData;
+        else {
+            headers.headers = {
+                "Content-Type": "application/json",
+            };
+            headers.body = JSON.stringify(body);
+        }
     }
 
     return headers;

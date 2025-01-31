@@ -1,9 +1,9 @@
 'use client'
 
 import {ReactNode, useCallback, useEffect, useRef} from 'react';
-import {HubConnection, HubConnectionBuilder} from "@microsoft/signalr";
+import {HubConnection, HubConnectionBuilder, LogLevel} from "@microsoft/signalr";
 import {usePostStore} from "@/hooks/usePostStore";
-import {Post, Comment, MessageType, NotificationType, Friend} from "@/types";
+import {Comment, Friend, MessageType, NotificationType, Post} from "@/types";
 import {useCommentStore} from "@/hooks/useCommentStore";
 import {useMessageStore} from "@/hooks/useMessageStore";
 import {useUserStore} from "@/hooks/useUserStore";
@@ -116,6 +116,7 @@ function SignalR({children, notifyUrl}: Props) {
             connection.current = new HubConnectionBuilder()
                 .withUrl(notifyUrl)
                 .withAutomaticReconnect()
+                .configureLogging(LogLevel.None)
                 .build();
 
             connection.current.on('NewPostCreated', handlePostCreated);

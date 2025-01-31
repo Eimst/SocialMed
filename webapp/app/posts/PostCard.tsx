@@ -2,7 +2,7 @@
 
 import React, {useEffect, useRef, useState} from 'react';
 import {Post} from "@/types";
-import {FaHeart, FaRegCommentDots, FaShare} from "react-icons/fa";
+import {FaRegCommentDots, FaShare} from "react-icons/fa";
 import CommentSection from "@/app/comments/CommentSection";
 import User from "@/app/components/User";
 import AddComment from "@/app/comments/AddComment";
@@ -10,6 +10,7 @@ import {formatDate} from "date-fns";
 import {useCommentStore} from "@/hooks/useCommentStore";
 import DeletePost from "@/app/posts/DeletePost";
 import {normalizeDateString} from "@/app/lib/dateNormalizer";
+import LikeButton from "@/app/likes/LikeButton";
 
 
 type Props = {
@@ -55,15 +56,9 @@ function PostCard({post}: Props) {
 
             </div>
 
-            <div className="grid grid-cols-2 items-center mt-6 mb-8 ">
+            <div className={`grid grid-cols-2 items-center mt-6 ${post.comments.length > 0 ? "mb-8" : "mb-4"} `}>
                 <div className="flex justify-start mt-2">
-                    <div className={`flex cursor-pointer gap-2`}>
-                        <FaHeart size={25} color={"red"}/>
-                        <span className={`text-md text-black`}>
-                        Like
-                    </span>
-                    </div>
-
+                    <LikeButton currentLikes={post.likes} postId={post.id} />
                 </div>
                 <div className="flex justify-end mt-2 gap-7">
                     <div className={`flex gap-2 cursor-pointer`}>

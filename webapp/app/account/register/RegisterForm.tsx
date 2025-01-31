@@ -6,11 +6,14 @@ import {FieldValues, useForm} from "react-hook-form";
 import {Button} from "flowbite-react";
 import toast from "react-hot-toast";
 import {register} from "@/app/actions/userActions";
-import {useRouter} from "next/navigation";
+import {redirect, useRouter} from "next/navigation";
 import Link from "next/link";
+import {useUserStore} from "@/hooks/useUserStore";
 
 function RegisterForm() {
     const router = useRouter();
+    const user = useUserStore(state => state.user);
+
     const {
         control, handleSubmit, reset,
         formState: {isSubmitting, isValid}
@@ -40,6 +43,9 @@ function RegisterForm() {
             });
         }
     }
+
+    if(user)
+        redirect('/');
 
     return (
         <div className="">

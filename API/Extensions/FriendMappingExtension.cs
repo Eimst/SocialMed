@@ -1,4 +1,5 @@
 using API.DTOs;
+using API.Helpers;
 using Core.Entities;
 
 namespace API.Extensions;
@@ -31,19 +32,9 @@ public static class FriendMappingExtension
             FirstName = user.FirstName,
             LastName = user.LastName,
             ProfileId = user.Id,
-            ProfilePictureUrl = user.ProfilePictureUrl,
+            ProfilePictureUrl = BlobHelper.GetProfilePictureUrl(user),
         };
     }
-    
-    // public static NotificationDto ToNotificationDto(this Friend friend, Notification notification)
-    // {
-    //     return new NotificationDto
-    //     {
-    //         UserProfile = friend.Requester.ToDto(),
-    //         Date = friend.DateCreated,
-    //         Text = "Sent you a friend request"
-    //     };
-    // }
     
     public static Notification ToNotification(this Friend friend)
     {

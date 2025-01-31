@@ -21,6 +21,7 @@ type Actions = {
     setUnreadMessagesByUserIdCount: (userId: string, count: number) => void;
     setActiveChats: (activeChats: string[]) => void;
     markPreviewAsRead: (userId: string) => void;
+    addMessagesToBackByUserId: (userId: string, messages: MessageType[]) => void;
 }
 
 const initialState: State = {
@@ -43,7 +44,6 @@ export const useMessageStore = create<State & Actions>((set, get) => ({
 
     addMessageByUserId: (userId, message) => {
         const {openedMessagesByUserId} = get();
-
         if (openedMessagesByUserId === userId) {
             markMessagesAsRead(userId).then();
             set(state => ({
@@ -65,6 +65,14 @@ export const useMessageStore = create<State & Actions>((set, get) => ({
                 get().markPreviewAsRead(userId)
         }
     },
+
+    addMessagesToBackByUserId: (userId, messages) => set(state => ({
+        messagesByUserId: {
+            ...state.messagesByUserId,
+            [userId]: [...(Array.isArray(messages) ? messages : []), ...state.messagesByUserId[userId]]
+        }
+    })),
+
 
     setOpenedMessagesByUserId: (userId: string | null) => set(() => ({
         openedMessagesByUserId: userId

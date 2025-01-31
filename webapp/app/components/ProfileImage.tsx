@@ -8,6 +8,7 @@ type Props = {
 }
 
 const ProfileImage = ({imageUrl}: Props) => {
+
     return (
         <div className={`relative w-14 h-14`}>
         <Image

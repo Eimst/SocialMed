@@ -65,8 +65,7 @@ public class MessagesController(
             return Forbid();
 
         var message =
-            await messageRepository.GetByIdWithSpecsAsync(MessageSpecification.ByUserId(currentUserProfile.Id, userId,
-                true));
+            await messageRepository.GetByIdWithSpecsAsync(MessageSpecification.ByUserId(currentUserProfile.Id, userId));
 
         var messages =
             await messageRepository.GetListWithSpecsAsync(
@@ -101,14 +100,16 @@ public class MessagesController(
 
     [Authorize]
     [HttpGet("user/{userId}")]
-    public async Task<ActionResult<List<MessageDto>>> GetChatHistoryWithUser(string userId)
+    public async Task<ActionResult<List<MessageDto>>> GetChatHistoryWithUser(string userId, [FromQuery] DateTime? cursor)
     {
         var currentUserProfile = await UserProfileHelper.GetAuthorizedUserProfile(unit, User);
         if (currentUserProfile == null)
             return Forbid();
 
+        var totalMessagesCount = await messageRepository.CountAsync(MessageSpecification.ByUserId(currentUserProfile.Id, userId));
+        
         var messages =
-            await messageRepository.GetListWithSpecsAsync(MessageSpecification.ByUserId(currentUserProfile.Id, userId));
+            await messageRepository.GetListWithSpecsAsync(MessageSpecification.ByUserIdWithCursor(currentUserProfile.Id, userId, cursor ?? DateTime.UtcNow));
 
         if (messages.Count == 0)
             return NoContent();
@@ -125,11 +126,12 @@ public class MessagesController(
 
             var decryptedMessages = await DecryptAllMessages(messages, decryptedPrivateKey, currentUserProfile.Id);
 
-            return Ok(decryptedMessages);
+            decryptedMessages.Reverse();
+            return Ok(new { messages = decryptedMessages, totalMessagesCount });
         }
         catch (Exception ex)
         {
-            return StatusCode(500, $"An unexpected error occurred.");
+            return StatusCode(500, "An unexpected error occurred.");
         }
     }
 

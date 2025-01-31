@@ -1,5 +1,4 @@
 
-
 import "./globals.css";
 import React from "react";
 import NavBar from "@/app/nav/NavBar";

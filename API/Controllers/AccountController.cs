@@ -1,6 +1,8 @@
 
 using API.DTOs;
+using API.Extensions;
 using API.Helpers;
+using Azure.Storage.Blobs;
 using Core.Entities;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -17,8 +19,11 @@ public class AccountController(
     IHybridEncryptionService hybridEncryptionService,
     UserManager<AppUser> userManager,
     IPrivateKeyCache privateKeyCache,
-    IHybridDecryptionService hybridDecryptionService) : ControllerBase
+    IHybridDecryptionService hybridDecryptionService,
+    BlobServiceClient blobServiceClient,
+    IConfiguration config) : ControllerBase
 {
+    
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginDto loginDto)
     {
@@ -93,7 +98,8 @@ public class AccountController(
             LastName = registerDto.LastName,
             UserId = user.Id,
             PrivateKey = encryptedPrivateKey,
-            PublicKey = publicKeyBase64
+            PublicKey = publicKeyBase64,
+            ProfilePictureUrl = config["DefaultProfileImage"]!
         };
 
         unit.Repository<UserProfile>().Add(userProfile);
@@ -124,13 +130,7 @@ public class AccountController(
         if (userProfile == null)
             return NoContent();
 
-        var userInfo = new UserProfileInfoDto
-        {
-            FirstName = userProfile.FirstName,
-            LastName = userProfile.LastName,
-            ProfileId = userProfile.Id,
-            ProfilePictureUrl = userProfile.ProfilePictureUrl,
-        };
+        var userInfo = userProfile.ToDto();
 
         return userInfo;
     }
@@ -143,20 +143,34 @@ public class AccountController(
         if (userProfile == null)
             return NotFound("User not found");
 
-        var userInfo = new UserProfileInfoDto
+        var userInfo = userProfile.ToDto();
+
+        return userInfo;
+    }
+    
+    [HttpGet("profile/{userId}")]
+    public async Task<ActionResult<UserProfileDto>> GetUserProfileInfo(string userId)
+    {
+        var userProfile = await unit.Repository<UserProfile>().GetByIdAsync(userId);
+
+        if (userProfile == null)
+            return NotFound("User not found");
+
+        var userInfo = new UserProfileDto
         {
             FirstName = userProfile.FirstName,
             LastName = userProfile.LastName,
             ProfileId = userProfile.Id,
-            ProfilePictureUrl = userProfile.ProfilePictureUrl,
+            ProfilePictureUrl = BlobHelper.GetProfilePictureUrl(userProfile), 
+            Bio = userProfile.Bio,
         };
 
         return userInfo;
     }
 
     [Authorize]
-    [HttpPost("profile/{userId}")]
-    public async Task<ActionResult> SetProfile(string userId, UserProfileUpdateDto userProfileUpdateDto)
+    [HttpPut("profile/{userId}/update-bio")]
+    public async Task<ActionResult> UpdateBio(string userId, UpdateBioDto bio)
     {
         var userProfile = await UserProfileHelper.GetAuthorizedUserProfile(unit, User);
 
@@ -166,8 +180,7 @@ public class AccountController(
         if (userId != userProfile.Id)
             return Forbid();
 
-        userProfile.Bio = userProfileUpdateDto.Bio;
-        userProfile.ProfilePictureUrl = userProfileUpdateDto.ProfilePictureUrl;
+        userProfile.Bio = bio.Bio;
 
         unit.Repository<UserProfile>().Update(userProfile);
 
@@ -175,5 +188,48 @@ public class AccountController(
             return Ok();
 
         return BadRequest("Error setting profile");
+    }
+
+    [Authorize]
+    [HttpPut("profile/{userId}/update-image")]
+    public async Task<ActionResult> UpdateImage(string userId, [FromForm] IFormFile image)
+    {
+        if (image.Length == 0)
+            return BadRequest("Image file is required.");
+
+        var userProfile = await UserProfileHelper.GetAuthorizedUserProfile(unit, User);
+
+        if (userProfile == null)
+            return Forbid();
+
+        if (userId != userProfile.Id)
+            return Forbid();
+        
+        try
+        {
+            var fileName = userProfile.Id;
+            var containerClient = blobServiceClient.GetBlobContainerClient(config["AzureBlob:ContainerName"]);
+            var blobClient = containerClient.GetBlobClient(fileName);
+            await using var stream = image.OpenReadStream();
+            await blobClient.UploadAsync(stream, new Azure.Storage.Blobs.Models.BlobHttpHeaders
+            {
+                ContentType = image.ContentType
+            });
+            
+            var imageUrl = blobClient.Uri.ToString();
+            
+            userProfile.ProfilePictureUrl = imageUrl + $"?key={DateTime.Now}";
+            unit.Repository<UserProfile>().Update(userProfile);
+
+            if (await unit.Complete())
+                return Ok(new { url = imageUrl });
+
+            return BadRequest("Error while updating profile");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+
     }
 }

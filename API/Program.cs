@@ -1,5 +1,7 @@
+using API.Helpers;
 using API.Middleware;
 using API.SignalR;
+using Azure.Storage.Blobs;
 using Core.Entities;
 using Core.Interfaces;
 using Infrastructure.Data;
@@ -7,9 +9,8 @@ using Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+var builder = WebApplication.CreateBuilder(args);
 
 if (!builder.Environment.IsDevelopment())
 {
@@ -27,6 +28,9 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<MediaContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddSingleton(x =>
+    new BlobServiceClient(builder.Configuration["AzureBlob:ConnectionString"]));
+
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
@@ -43,8 +47,8 @@ builder.Services.AddCors();
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.HttpOnly = true;
-    options.Cookie.SameSite = SameSiteMode.None; // Required for cross-origin cookies
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Requires HTTPS
+    options.Cookie.SameSite = SameSiteMode.None; 
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; 
     options.ExpireTimeSpan = TimeSpan.FromDays(2);
     options.SlidingExpiration = true;
 });
@@ -56,6 +60,9 @@ builder.Services.AddIdentityApiEndpoints<AppUser>()
     .AddEntityFrameworkStores<MediaContext>();
 
 builder.Services.AddSignalR();
+
+BlobHelper.Initialize(builder.Configuration);
+
 var app = builder.Build();
 
 app.UseMiddleware<ErrorFormatterMiddleware>();

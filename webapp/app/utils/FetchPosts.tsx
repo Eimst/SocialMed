@@ -5,10 +5,12 @@ import {getAllPosts} from "@/app/actions/postActions";
 import {usePostStore} from "@/hooks/usePostStore";
 import toast from "react-hot-toast";
 import {useLoadingStore} from "@/hooks/useLoadingStore";
+import {useUserStore} from "@/hooks/useUserStore";
 
 function FetchPosts() {
     const setPosts = usePostStore(state => state.setPosts);
     const setLoading = useLoadingStore(state => state.setLoading);
+    const user = useUserStore(state => state.user);
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -24,7 +26,7 @@ function FetchPosts() {
             }
         };
         fetchPosts()
-    }, [setLoading, setPosts]);
+    }, [setLoading, setPosts, user]);
 
     return (
         <></>
