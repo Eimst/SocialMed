@@ -142,6 +142,14 @@ public class FriendsController(IUnitOfWork unit, IHubContext<NotificationHub> hu
             return BadRequest("Relationship doesn't exist");
 
         unit.Repository<Friend>().Remove(existingFriendRelation);
+        var notification = await unit.Repository<Notification>().GetByIdWithSpecsAsync(
+            new NotificationSpecification(existingFriendRelation.RequesterId, existingFriendRelation.ResponderId));
+
+        if (notification != null)
+        {
+            notification.isDeleted = true;
+            unit.Repository<Notification>().Update(notification);
+        }
 
         if (!await unit.Complete()) 
             return BadRequest("Error while saving request");

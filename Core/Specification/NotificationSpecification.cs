@@ -11,4 +11,10 @@ public class NotificationSpecification : BaseSpecification<Notification>
         AddOrderByDescending(x => x.Date);
     }
     
+    public NotificationSpecification(string currentUserId, string initUser) : base(entity =>
+    entity.OwnerId == initUser && entity.InitiatorId == currentUserId && !entity.isDeleted)
+    {
+        AddInclude(x => x.Initiator);
+        AddOrderByDescending(x => x.Date);
+    }
 }
