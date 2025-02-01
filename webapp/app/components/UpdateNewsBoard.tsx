@@ -9,9 +9,11 @@ function UpdateNewsBoard() {
             <h2 className={`text-md font-semibold text-center mb-3`}>Feature Overview</h2>
             <h2 className={`text-md font-semibold pl-5 text-green-600`}>Implemented Features</h2>
             <ul className={`list-disc text-xs py-1 pl-5`}>
+                <li>A single chat head per browser tab stays visible after closing a chat, displays new messages for 10 seconds
+                    without marking them as seen, and shows the unread message count in real-time.</li>
                 <li>Infinite scrolling for messages.</li>
                 <li>Update your profile image and bio.</li>
-                <li>Real-Time chat preview and unread messages count</li>
+                <li>Real-Time chat preview and unread messages count in Friends tab</li>
                 <li>Support for simultaneous connections on multiple devices.</li>
                 <li>Receive notifications for new friend requests.</li>
                 <li>Real-Time update when a friend accepts/rejects/cancels a friendship request</li>

@@ -1,4 +1,4 @@
-import { create } from 'zustand'
+import {create} from 'zustand'
 import {Friend, UserProfileInfo} from "@/types";
 
 
@@ -19,14 +19,14 @@ type Actions = {
 const initialState: State = {
     isOpen: false,
     friends: [],
-    chattingWithFriend: null
+    chattingWithFriend: null,
 }
 
 
 export const useFriendStore = create<State & Actions>((set) => ({
     ...initialState,
 
-    setOpen: (data) => set({ isOpen: data }),
+    setOpen: (data) => set({isOpen: data}),
 
     setFriends: (friends) => set({friends: friends}),
 
@@ -38,6 +38,6 @@ export const useFriendStore = create<State & Actions>((set) => ({
         friends: state.friends.filter((friend) => friend.userProfileInfo.profileId !== userId) ?? []
     })),
 
-    setChattingWithFriend: (friend) => set ({chattingWithFriend: friend})
+    setChattingWithFriend: (friend) => set({chattingWithFriend: friend}),
 
 }))

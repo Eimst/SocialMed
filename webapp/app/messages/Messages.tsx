@@ -27,6 +27,7 @@ function Messages({friend, isAtBottom, isAtTop}: Props) {
     const addMessagesToBackByUserId = useMessageStore(state => state.addMessagesToBackByUserId)
     const [totalMessagesCount, setTotalMessagesCount] = useState<number>(0);
     const [loading, setLoading] = useState(false);
+    const [firstLoad, setFirstLoad] = useState<boolean>(true);
 
     const bottomRef = useRef<HTMLDivElement | null>(null);
     const observerRef = useRef<HTMLDivElement | null>(null);
@@ -66,8 +67,10 @@ function Messages({friend, isAtBottom, isAtTop}: Props) {
                 await markMessagesAsRead(friend.profileId)
 
                 setOpenedMessagesByUserId(friend.profileId)
-                if (response)
+                if (response) {
                     setMessages(friend.profileId, response.messages)
+                    setTimeout(() => setFirstLoad(false), 1);
+                }
                 setTotalMessagesCount(response.totalMessagesCount)
                 await addActiveChats()
             }
@@ -118,7 +121,7 @@ function Messages({friend, isAtBottom, isAtTop}: Props) {
         }
     }, [messages]);
 
-    if (!messages) {
+    if (firstLoad) {
         return null
     }
 

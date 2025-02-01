@@ -98,7 +98,6 @@ function SignalR({children, notifyUrl}: Props) {
 
     const handleActiveChatsChanged = useCallback((userIds: string[]) => {
         setActiveChats(userIds)
-        console.log(userIds)
         userIds.map(id => {
             setUnreadMessagesByUserIdCount(id, 0)
             markPreviewAsRead(id)

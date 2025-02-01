@@ -36,7 +36,6 @@ function Friend({user, showMessageIcon = true, setChattingWithFriend}: Props) {
             else if(resp){
                 addMessageByUserId(user.profileId, resp.message)
                 setUnreadMessagesCount(user.profileId, resp.unreadMessagesCount)
-                // console.log(messageByUserId)
             }
         }
         getPreview()

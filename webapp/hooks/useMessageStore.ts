@@ -43,8 +43,8 @@ export const useMessageStore = create<State & Actions>((set, get) => ({
     })),
 
     addMessageByUserId: (userId, message) => {
-        const {openedMessagesByUserId} = get();
-        if (openedMessagesByUserId === userId) {
+        const {openedMessagesByUserId, activeChats} = get();
+        if (openedMessagesByUserId === userId && activeChats.includes(userId)) {
             markMessagesAsRead(userId).then();
             set(state => ({
                 messagesByUserId: {
