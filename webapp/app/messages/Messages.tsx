@@ -69,7 +69,10 @@ function Messages({friend, isAtBottom, isAtTop}: Props) {
                 setOpenedMessagesByUserId(friend.profileId)
                 if (response) {
                     setMessages(friend.profileId, response.messages)
-                    setTimeout(() => setFirstLoad(false), 1);
+                    setTimeout(() => {
+                        setFirstLoad(false)
+                        scrollToBottom()
+                    }, 1);
                 }
                 setTotalMessagesCount(response.totalMessagesCount)
                 await addActiveChats()
@@ -114,7 +117,7 @@ function Messages({friend, isAtBottom, isAtTop}: Props) {
     }, [isAtTop]);
 
     useLayoutEffect(() => {
-        if (messages.length <= 10 || firstLoad || isAtBottom) {
+        if (messages.length <= 10 || isAtBottom) {
             scrollToBottom();
         }
     }, [messages]);
