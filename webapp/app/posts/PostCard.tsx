@@ -56,7 +56,7 @@ function PostCard({post}: Props) {
 
             </div>
 
-            <div className={`grid grid-cols-2 items-center mt-6 mb-8`}>
+            <div className={`grid grid-cols-2 items-center mt-6 mb-4`}>
                 <div className="flex justify-start mt-2">
                     <LikeButton currentLikes={post.likes} postId={post.id} />
                 </div>
@@ -79,12 +79,12 @@ function PostCard({post}: Props) {
             </div>
 
             {isCommenting && (
-                <div ref={addCommentRef}  className={`block  -m-5`}>
+                <div ref={addCommentRef}  className={`block -my-8 -mx-5 mt-2`}>
                     <AddComment postId={post.id} setCommenting={setCommenting}/>
                 </div>
             )}
 
-            <div className={`block  -m-5`}>
+            <div className={`block  -mx-5 -my-5 mt-2`}>
                 <CommentSection postId={post.id}/>
             </div>
 
