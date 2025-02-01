@@ -114,9 +114,7 @@ function Messages({friend, isAtBottom, isAtTop}: Props) {
     }, [isAtTop]);
 
     useLayoutEffect(() => {
-        if (messages.length <= 10) {
-            scrollToBottom();
-        } else if (isAtBottom) {
+        if (messages.length <= 10 || firstLoad || isAtBottom) {
             scrollToBottom();
         }
     }, [messages]);

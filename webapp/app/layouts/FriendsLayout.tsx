@@ -135,7 +135,7 @@ export default function FriendsLayout({children}: { children: React.ReactNode })
                                     <div className={`absolute -top-1 -right-1 bg-red-600 text-white px-1.5 rounded-full`}>
                                         {unreadMessagesCount > 0 && (unreadMessagesCount)}
                                     </div>
-                                    <div className={`absolute text-xs font-semibold text-black`}>
+                                    <div className={`absolute -bottom-3 bg-gray-200 py-1 px-2 shadow rounded-full text-xs font-semibold text-black`}>
                                         {chattingWithFriend.firstName}
                                     </div>
 
