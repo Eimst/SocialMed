@@ -47,7 +47,7 @@ function PostCard({post}: Props) {
 
 
             <div className={`-m-5 border-b-2 mt-2 `}>
-                <p className="text-md text-gray-900 justify-between p-5">
+                <p className="text-md text-gray-900 justify-between p-5 break-all">
                     {post.content}
                     <span className={`text-xs block pt-4`}>
                          {formatDate(new Date(normalizeDateString(post.dateCreated)), 'PPP HH:mm')}
@@ -56,7 +56,7 @@ function PostCard({post}: Props) {
 
             </div>
 
-            <div className={`grid grid-cols-2 items-center mt-6 ${post.comments.length > 0 ? "mb-8" : "mb-4"} `}>
+            <div className={`grid grid-cols-2 items-center mt-6 mb-8`}>
                 <div className="flex justify-start mt-2">
                     <LikeButton currentLikes={post.likes} postId={post.id} />
                 </div>

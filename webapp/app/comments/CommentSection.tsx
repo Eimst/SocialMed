@@ -29,15 +29,15 @@ function CommentSection({postId}: Props) {
                                 comments.map(x => <UserComment key={x.id} comment={x}/>)
                             }
                         </div>
-                        {
-                            comments.length > 3 && (
-                                <div className={`flex justify-start text-md text-black  bg-blue-100 py-2 shadow-md`}>
-                                    <span className={`block px-5`}>
-                                        Show all comments
-                                    </span>
-                                </div>
-                            )
-                        }
+                        {/*{*/}
+                        {/*    comments.length > 3 && (*/}
+                        {/*        <div className={`flex justify-start text-md text-black  bg-blue-100 py-2 shadow-md`}>*/}
+                        {/*            <span className={`block px-5`}>*/}
+                        {/*                Show all comments*/}
+                        {/*            </span>*/}
+                        {/*        </div>*/}
+                        {/*    )*/}
+                        {/*}*/}
                     </>
                 )
             }

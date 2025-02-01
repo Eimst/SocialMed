@@ -92,7 +92,7 @@ function Profile({id}: Props) {
                         {isEditingBio ? (
                             <EditBio userProfile={userProfile} setIsBioEditing={setIsEditingBio} setUserProfile={setUserProfile}/>
                         ) : (
-                            <span className={`flex w-[100%]  justify-start text-black text-justify`}>
+                            <span className={`flex w-[100%]  justify-start text-black text-justify break-all`}>
                                 {userProfile.bio}
                             </span>
                         )}

@@ -34,7 +34,7 @@ function ShowAllFriends({userId}: Props) {
                     <Friend key={friend.userProfileInfo.profileId} user={friend.userProfileInfo}
                             showMessageIcon={false}/>
                 </div>
-            )) : (<span>User have no friends</span>)}
+            )) : (<span>This user has no friends</span>)}
 
         </div>
     );

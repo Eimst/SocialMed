@@ -18,7 +18,7 @@ function UserComment({comment}: Props) {
                 <DeleteComment comment={comment} />
             </div>
             <div className={`gap-10`}>
-                 <span className={`block text-black`}>
+                 <span className={`block text-black break-all`}>
                     {comment.text}
                 </span>
 

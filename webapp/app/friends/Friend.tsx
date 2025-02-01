@@ -62,7 +62,7 @@ function Friend({user, showMessageIcon = true, setChattingWithFriend}: Props) {
                 (showMessageIcon && messageByUserId[0]) && (
                     <div className={`flex items-center justify-between`}>
                         <div
-                            className={`text-justify py-2 px-3 mt-2 rounded-lg max-w-[75%] w-fit 
+                            className={`text-justify py-2 px-3 mt-2 rounded-lg max-w-[75%] w-fit break-words
                         ${messageByUserId[0].sender.profileId === user.profileId ? " bg-gray-100" : "bg-blue-100"}
                         ${messageByUserId[0].sender.profileId === user.profileId && messageByUserId[0].isRead && "text-gray-500"}`}
                         >

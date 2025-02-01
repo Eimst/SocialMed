@@ -87,7 +87,7 @@ function LoginForm() {
                 </div>
             </form>
             <div className={`flex justify-center mt-2`}>
-                <span className={`text-sm`}>Don&apos;t have an account? <Link href="/account/register"
+                <span className={`text-sm`}>Doesn&apos;t have an account? <Link href="/account/register"
                                                                          className={`text-blue-500`}>Register</Link></span>
             </div>
         </div>
