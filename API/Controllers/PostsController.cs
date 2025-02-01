@@ -62,14 +62,14 @@ public class PostsController(IUnitOfWork unit, IHubContext<NotificationHub> hubC
     [HttpPut("{id}")]
     public async Task<ActionResult> UpdatePost(string id, PostCreateUpdateDto postCreateUpdateDto)
     {
-        if (!await IsPostIsCurrentUser(id))
-            return Forbid();
-            
         var post = await unit.Repository<Post>().GetByIdAsync(id);
         
         if (post == null)
             return NotFound();
 
+        if (!await IsPostIsCurrentUser(id))
+            return Forbid();
+        
         post.ImageUrl = postCreateUpdateDto.ImageUrl;
         post.Content = postCreateUpdateDto.Content;
 
@@ -85,9 +85,6 @@ public class PostsController(IUnitOfWork unit, IHubContext<NotificationHub> hubC
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeletePost(string id)
     {
-        if (!await IsPostIsCurrentUser(id))
-            return Forbid();
-        
         var post = await unit.Repository<Post>().GetByIdAsync(id);
 
         if (post == null)
@@ -95,6 +92,9 @@ public class PostsController(IUnitOfWork unit, IHubContext<NotificationHub> hubC
             return NotFound();
         }
 
+        if (!await IsPostIsCurrentUser(id))
+            return Forbid();
+        
         unit.Repository<Post>().Remove(post);
 
         if (!await unit.Complete()) 
