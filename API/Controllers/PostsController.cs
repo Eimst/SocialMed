@@ -20,9 +20,9 @@ public class PostsController(IUnitOfWork unit, IHubContext<NotificationHub> hubC
     public async Task<ActionResult<List<PostDto>>> GetAllPosts()
     {
         var specs = new PostSpecification();
-        var post = await unit.Repository<Post>().GetListWithSpecsAsync(specs);
+        var posts = await unit.Repository<Post>().GetListWithSpecsAsync(specs);
 
-        return post.Select(x => x.ToDto()).ToList();
+        return posts.Select(x => x.ToDto()).ToList();
     }
 
     [HttpGet("{id}")]
