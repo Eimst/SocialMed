@@ -1,4 +1,4 @@
-# 🚀 SocialMedia
+# 🚀 Mini SocialMedia
 
 A real-time social media platform enabling **secure, encrypted communication** with **multi-device support**. Messages are **server-side encrypted** using **RSA + AES**, with AES keys securely managed in **Azure Key Vault**. The platform supports **real-time chat, posts, comments, notifications, and user interactions**.
 
@@ -9,9 +9,9 @@ A real-time social media platform enabling **secure, encrypted communication** w
 
 ### 📸 Profile Image Changing Demo
 
-![GIF Not Loading](https://i.imgur.com/D84kYEX.gif)
-
-<img src="https://i.imgur.com/D84kYEX.gif" width="100%">
+<p align="center">
+  <img src="https://i.ibb.co/JjkNnkGY/ezgif-com-speed.gif" width="100%">
+</p>
 
 ### 📹 Multi-Device Chatting **(Video Demo)**
 [![Watch Video](https://i.imgur.com/NwPrhHP.png)](https://i.imgur.com/NwPrhHP.mp4)
