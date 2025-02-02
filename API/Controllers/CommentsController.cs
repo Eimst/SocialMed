@@ -82,16 +82,16 @@ public class CommentsController(IUnitOfWork unit, IHubContext<NotificationHub> h
         if (userProfile == null)
             return Forbid();
         
-        if (userProfile.Comments.All(x => x.Id != id))
-        {
-            return Forbid();
-        }
-        
         ISpecification<Comment> specs = new CommentSpecification(postId, id);
         var comment = await unit.Repository<Comment>().GetByIdWithSpecsAsync(specs);
         
         if (comment == null)
             return NotFound();
+        
+        if (userProfile.Comments.All(x => x.Id != id))
+        {
+            return Forbid();
+        }
 
         try
         {
