@@ -9,6 +9,8 @@ public class PostSpecification : BaseSpecification<Post>
         AddInclude(x => x.Comments);
         AddInclude(x => x.Likes);
         AddInclude(x => x.UserProfile);
+        AddInclude(x => x.Likes.Select(l => l.UserProfile));
+        AddInclude(x => x.Comments.Select(l => l.UserProfile));
         AddOrderByDescending(x => x.DateCreated);
     }
     
@@ -16,6 +18,8 @@ public class PostSpecification : BaseSpecification<Post>
     {
         AddInclude(x => x.Comments);
         AddInclude(x => x.Likes);
+        AddInclude(x => x.Likes.Select(l => l.UserProfile));
+        AddInclude(x => x.Comments.Select(l => l.UserProfile));
         AddInclude(x => x.UserProfile);
     }
     
@@ -24,6 +28,8 @@ public class PostSpecification : BaseSpecification<Post>
         AddInclude(x => x.Comments);
         AddInclude(x => x.Likes);
         AddInclude(x => x.UserProfile);
+        AddInclude(x => x.Likes.Select(l => l.UserProfile));
+        AddInclude(x => x.Comments.Select(l => l.UserProfile));
         AddOrderByDescending(x => x.DateCreated);
     }
 }

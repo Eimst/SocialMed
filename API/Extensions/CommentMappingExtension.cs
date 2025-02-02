@@ -5,7 +5,7 @@ namespace API.Extensions;
 
 public static class CommentMappingExtension
 {
-    public static CommentDto ToDto(this Comment comment, string postId)
+    public static CommentDto ToDto(this Comment comment)
     {
         return new CommentDto
         {
@@ -13,7 +13,7 @@ public static class CommentMappingExtension
             UserId = comment.UserId,
             DateCreated = comment.DateCreated,
             Text = comment.Text,
-            PostId = postId,
+            PostId = comment.PostId,
             UserProfile = comment.UserProfile.ToDto()
         };
     }

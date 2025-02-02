@@ -14,7 +14,7 @@ public static class PostMappingExtension
             Content = post.Content,
             ImageUrl = post.ImageUrl,
             DateCreated = post.DateCreated,
-            Comments = post.Comments.Select(x => x.ToDto(post.Id)).ToList(),
+            Comments = post.Comments.Select(x => x.ToDto()).ToList(),
             Likes = post.Likes.Select(x => x.ToDto()).ToList(),
             UserProfile = post.UserProfile.ToDto()
         };

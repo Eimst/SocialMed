@@ -24,7 +24,7 @@ public class CommentsController(IUnitOfWork unit, IHubContext<NotificationHub> h
         
         var comments = await unit.Repository<Comment>().GetListWithSpecsAsync(commentSpecification);
         
-        return comments.Select(comment => comment.ToDto(postId)).ToList();
+        return comments.Select(comment => comment.ToDto()).ToList();
     }
     
     [HttpGet("{id}")]
@@ -37,7 +37,7 @@ public class CommentsController(IUnitOfWork unit, IHubContext<NotificationHub> h
         if (comment == null)
             return NotFound();
         
-        return comment.ToDto(postId);
+        return comment.ToDto();
     }
 
     [Authorize]
@@ -68,8 +68,8 @@ public class CommentsController(IUnitOfWork unit, IHubContext<NotificationHub> h
         if (!await unit.Complete()) 
             return BadRequest("Error while adding post");
         
-        await hubContext.Clients.All.SendAsync("NewCommentCreated", newComment.ToDto(postId));
-        return CreatedAtAction(nameof(GetCommentById), new { postId, id = newComment.Id  }, newComment.ToDto(postId));
+        await hubContext.Clients.All.SendAsync("NewCommentCreated", newComment.ToDto());
+        return CreatedAtAction(nameof(GetCommentById), new { postId, id = newComment.Id  }, newComment.ToDto());
 
     }
 
