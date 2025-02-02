@@ -50,7 +50,7 @@ public class MessagesController(
 
             return Ok(message.ToDto(messageContent));
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, $"An unexpected error occurred.");
         }
@@ -92,7 +92,7 @@ public class MessagesController(
                 UnreadMessagesCount = messages.Count
             });
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, $"An unexpected error occurred.");
         }
@@ -129,7 +129,7 @@ public class MessagesController(
             decryptedMessages.Reverse();
             return Ok(new { messages = decryptedMessages, totalMessagesCount });
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, "An unexpected error occurred.");
         }

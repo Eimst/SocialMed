@@ -17,6 +17,7 @@ function WriteMessage({sendMessage}: Props) {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (content.trim().length < 1) {
+            toast.dismiss()
             toast.error("Message cannot be empty");
         } else {
             sendMessage(content);

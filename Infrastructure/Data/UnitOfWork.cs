@@ -17,7 +17,7 @@ public class UnitOfWork(MediaContext context) : IUnitOfWork
     {
         var type = typeof(TEntity).Name;
 
-        return (IGenericRepository<TEntity>)_repositories.GetOrAdd(type, t =>
+        return (IGenericRepository<TEntity>)_repositories.GetOrAdd(type, _ =>
         {
             var repositoryType = typeof(GenericRepository<>).MakeGenericType(typeof(TEntity));
             return Activator.CreateInstance(repositoryType, context) ??

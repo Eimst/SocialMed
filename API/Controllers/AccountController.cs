@@ -55,7 +55,7 @@ public class AccountController(
             decryptedPrivateKey =
                 await hybridDecryptionService.DecryptEncryptedPrivateKey(userProfile.PrivateKey, user.Id);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             await signInManager.SignOutAsync();
             return StatusCode(500,

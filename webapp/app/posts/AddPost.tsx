@@ -23,6 +23,10 @@ function AddPost() {
                 throw new Error("Must be logged in to post");
             }
 
+            if(!content || content.trim() === ""){
+                throw new Error("Post cannot be empty");
+            }
+
             const newPost = {
                 content: content,
                 imageUrl: null,
@@ -39,6 +43,7 @@ function AddPost() {
             // addPost(createdPost)
 
         } catch (error: unknown) {
+            toast.dismiss()
             if (error && (error as CustomError).message) {
                 toast.error((error as CustomError).message);
             } else if ((error as Error).message){

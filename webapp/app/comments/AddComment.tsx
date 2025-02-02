@@ -28,6 +28,10 @@ function AddComment({postId, setCommenting}: Props) {
                 throw new Error("Must be logged in to comment");
             }
 
+            if(!content || content.trim() === ""){
+                throw  new Error("Comment cannot be empty");
+            }
+
             const newComment = {
                 text: content,
                 postId: postId,
@@ -44,10 +48,13 @@ function AddComment({postId, setCommenting}: Props) {
             // addComments(postId, createdComment);
 
         } catch (error: unknown) {
+            toast.dismiss()
             if (error instanceof Error) {
                 toast.error(error.message);
+            } else if (typeof error === "object" && error !== null && "message" in error) {
+                toast.error((error as { message: string }).message);
             } else {
-                toast.error("An unexpected error occurred.");
+                toast.error("An unexpected error occurred");
             }
         }
     };

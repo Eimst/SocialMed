@@ -8,6 +8,7 @@ using Core.Specification;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
@@ -91,14 +92,24 @@ public class CommentsController(IUnitOfWork unit, IHubContext<NotificationHub> h
         
         if (comment == null)
             return NotFound();
-        
-        unit.Repository<Comment>().Remove(comment);
 
-        if (!await unit.Complete()) 
-            return BadRequest("Error while deleting post");
+        try
+        {
+            unit.Repository<Comment>().Remove(comment);
+
+            if (!await unit.Complete())
+                return BadRequest("Error while deleting post");
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            return NotFound("Comment is already deleted");
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "Something went wrong");
+        }
         
         await hubContext.Clients.All.SendAsync("CommentDeleted", comment.Id, comment.PostId);
         return NoContent();
-
     }
 }

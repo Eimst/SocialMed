@@ -17,6 +17,6 @@ public static class BlobHelper
 
     public static string GetProfilePictureUrl(UserProfile userProfile)
     {
-        return userProfile.ProfilePictureUrl == _defaultImageUrl ? _defaultImageUrl! : userProfile.ProfilePictureUrl;
+        return userProfile.ProfilePictureUrl == _defaultImageUrl ? _defaultImageUrl : userProfile.ProfilePictureUrl;
     }
 }

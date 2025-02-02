@@ -28,7 +28,7 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<MediaContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddSingleton(x =>
+builder.Services.AddSingleton(_ =>
     new BlobServiceClient(builder.Configuration["AzureBlob:ConnectionString"]));
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));

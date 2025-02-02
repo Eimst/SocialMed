@@ -1,4 +1,3 @@
-using System.Collections.Concurrent;
 using API.Helpers;
 using Core.Interfaces;
 using Microsoft.AspNetCore.SignalR;

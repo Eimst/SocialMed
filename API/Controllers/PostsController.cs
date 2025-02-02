@@ -8,6 +8,7 @@ using Core.Specification;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
@@ -94,11 +95,22 @@ public class PostsController(IUnitOfWork unit, IHubContext<NotificationHub> hubC
 
         if (!await IsPostIsCurrentUser(id))
             return Forbid();
-        
-        unit.Repository<Post>().Remove(post);
 
-        if (!await unit.Complete()) 
-            return BadRequest("Error while deleting post");
+        try
+        {
+            unit.Repository<Post>().Remove(post);
+
+            if (!await unit.Complete())
+                return BadRequest("Error while deleting post");
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            return NotFound("Post is already deleted");
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "Something went wrong");
+        }
         
         await hubContext.Clients.All.SendAsync("PostDeleted", post.Id);
         return NoContent();
