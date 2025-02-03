@@ -1,6 +1,8 @@
+using Core.Interfaces;
+
 namespace Core.Entities;
 
-public class Like : BaseEntity
+public class Like : BaseEntity, IUserProfile
 {
     public DateTime DateCreated { get; set; } = DateTime.UtcNow;
     

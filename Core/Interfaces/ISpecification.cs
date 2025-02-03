@@ -19,3 +19,8 @@ public interface ISpecification<T>
     int Take { get; }
     
 }
+
+public interface ISpecification<T, TPrevious> : ISpecification<T>
+{
+    public List<(Expression<Func<T, IEnumerable<TPrevious>>>, Expression<Func<TPrevious, object>>)> ThenIncludes { get; }
+}

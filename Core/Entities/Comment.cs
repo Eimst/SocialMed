@@ -1,6 +1,8 @@
+using Core.Interfaces;
+
 namespace Core.Entities;
 
-public class Comment : BaseEntity
+public class Comment : BaseEntity, IUserProfile
 {
     public required string Text { get; set; }
     

@@ -56,4 +56,5 @@ public class GenericRepository<T>(MediaContext context) : IGenericRepository<T> 
     {
         return SpecificationEvaluator<T>.GetQuery(context.Set<T>().AsQueryable(), spec);
     }
+    
 }
