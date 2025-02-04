@@ -1,6 +1,6 @@
 # 🚀 Mini SocialMedia
 
-A real-time social media platform enabling **secure, encrypted communication** with **multi-device support**. Messages are **server-side encrypted** using **RSA + AES**, with AES keys securely managed in **Azure Key Vault**. The platform supports **real-time chat, posts, comments, notifications, and user interactions**.
+A real-time social media platform with a **Next.js frontend** and an **ASP.NET Core Web API backend**, enabling **secure, encrypted communication** with **multi-device support**. Messages are **server-side encrypted** using **RSA + AES**, with AES keys securely managed in **Azure Key Vault**. The platform supports **real-time chat, posts, comments, notifications, and user interactions**.
 
 ---
 
@@ -27,7 +27,7 @@ A real-time social media platform enabling **secure, encrypted communication** w
 
 ## 🛠 Tech Stack
 
-- **Backend**: C#, ASP.NET, SQL Server  
+- **Backend**: C#, ASP.NET Core Web API, SQL Server  
 - **Frontend**: Next.js, TypeScript, Zustand (for global state)  
 - **Real-Time Communication**: SignalR  
 - **Storage**: Azure Blob Storage  
